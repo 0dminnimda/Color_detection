@@ -55,6 +55,20 @@ while 1:
     frame = img1
     hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
 
+    #img = img1
+    #img = cv.imread('home.jpg')
+    #Z = img.reshape((-1,3))
+    # convert to np.float32
+    #Z = np.float32(img)
+    ## define criteria, number of clusters(K) and apply kmeans()
+    #criteria = (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 10, 1.0)
+    #K = 16
+    #ret,label,center=cv.kmeans(Z,K,None,criteria,10,cv.KMEANS_RANDOM_CENTERS)
+    ## Now convert back into uint8, and make original image
+    #center = np.uint8(center)
+    #res = center[label.flatten()]
+    #res2 = res.reshape((img.shape))
+    #cv.imshow('ress2',res2)
     #print(np.array(sct_img))
 
     name = ["LH","LS","LV","UH","US","UV"]
@@ -93,12 +107,27 @@ while 1:
         #roi_gray1 = gray[y:y+h, x:x+w]
         roi_color1 = bet[y:y+h, x:x+w]
 
+    #a, fc = cv.findContours( mask3.copy(), cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
+    a1, fc2 = cv.findContours( mask3.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE) # внешние контуры
+    #a2, fc3 = cv.findContours( mask3.copy(), cv.RETR_CCOMP, cv.CHAIN_APPROX_SIMPLE)
+    #a3, fc4 = cv.findContours( mask3.copy(), cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE) # многоуровневая иерархия
+    a3, fc4 = cv.findContours( mask3.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)
+
+    #dc = cv.drawContours( bet.copy(), a, -1, (0, 150, 0))
+    dc2 = cv.drawContours( bet.copy(), a1, -1, (0, 150, 0))
+    #dc3 = cv.drawContours( bet.copy(), a2, -1, (0, 150, 0))
+    dc4 = cv.drawContours( bet.copy(), a3, -1, (0, 150, 0))
+
     #cv.namedWindow ( "res" , cv.WINDOW_NORMAL)
     #cv.imshow("frame", frame)
     #cv.imshow("res", res)
     #cv.imshow("res2", res2)
     #cv.imshow("res3", res3)
-    cv.imshow("bet", bet)
+    #cv.imshow("bet", bet)
+    #cv.imshow("bet1", dc)
+    cv.imshow("bet2", dc2)
+    #cv.imshow("bet3", dc3)
+    cv.imshow("bet4", dc4)
     #cv.imshow("img", img1)
 
     if cv.waitKey(3) & 0xFF == ord('4'):
@@ -109,3 +138,5 @@ while 1:
     if cv.waitKey(1) & 0xFF == ord('2'):
         cv.destroyAllWindows()
         break
+
+cap.release()
