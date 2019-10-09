@@ -28,20 +28,9 @@ ctb(cr_tb3)
 ctb(cr_tb2)
 ctb(cr_tb)
 
-name = ["LH","LS","LV","UH","US","UV"]
-name2 = ["LH2","LS2","LV2","UH2","US2","UV2"]
-name3 = ["LH3","LS3","LV3","UH3","US3","UV3"]
-l_h, l_s, l_v, u_h, u_s, u_v = gtbp(name)
-l_h2, l_s2, l_v2, u_h2, u_s2, u_v2 = gtbp(name2)
-l_h3, l_s3, l_v3, u_h3, u_s3, u_v3 = gtbp(name3)
-
-l_b, u_b = np.array([l_h, l_s, l_v]), np.array([u_h, u_s, u_v])
-l_b2, u_b2 = np.array([l_h2, l_s2, l_v2]), np.array([u_h2, u_s2, u_v2])
-l_b3, u_b3 = np.array([l_h3, l_s3, l_v3]), np.array([u_h3, u_s3, u_v3])
-
-left = 5 # 9
-top = 45 # 40
-wid = 1290 - left # 1294
+left = 3 # 9
+top = 40 # 40
+wid = 1295 - left # 1294
 hei = 770 - top
 
 bbox = {'top': top, 'left': left, 'width': wid, 'height': hei}
@@ -58,13 +47,22 @@ cap_new.set(cv.CAP_PROP_FPS, 5)
 #cap_new.set(cv.CAP_PROP_FRAME_HEIGHT , 720)  
 
 #b_cascade = cv.CascadeClassifier('cascade2.xml')
-#start = time.time()
 nn = 0
 m=0
 
 imggg = cv.imread("screenshoot10.png")
 
 while 1:
+    name = ["LH","LS","LV","UH","US","UV"]
+    name2 = ["LH2","LS2","LV2","UH2","US2","UV2"]
+    name3 = ["LH3","LS3","LV3","UH3","US3","UV3"]
+    l_h, l_s, l_v, u_h, u_s, u_v = gtbp(name)
+    l_h2, l_s2, l_v2, u_h2, u_s2, u_v2 = gtbp(name2)
+    l_h3, l_s3, l_v3, u_h3, u_s3, u_v3 = gtbp(name3)
+
+    l_b, u_b = np.array([l_h, l_s, l_v]), np.array([u_h, u_s, u_v])
+    l_b2, u_b2 = np.array([l_h2, l_s2, l_v2]), np.array([u_h2, u_s2, u_v2])
+    l_b3, u_b3 = np.array([l_h3, l_s3, l_v3]), np.array([u_h3, u_s3, u_v3])
     #if m != 4:
     #    m += 1
     #elif m == 5:
@@ -80,17 +78,17 @@ while 1:
     hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
     #gray = cv.cvtColor(bet, cv.COLOR_BGR2GRAY)
 
-    mask = cv.inRange(hsv, l_b, u_b)
+    mask = cv.inRange(hsv, l_b, u_b) # charapers
     #res = cv.bitwise_and(frame, frame, mask=mask)
-    mask2 = cv.inRange(hsv, l_b2, u_b2)
+    mask2 = cv.inRange(hsv, l_b2, u_b2) # walls
     #res2 = cv.bitwise_and(frame, frame, mask=mask2)
-    mask3 = cv.inRange(hsv, l_b3, u_b3)
+    mask3 = cv.inRange(hsv, l_b3, u_b3) # boxes
     #res3 = cv.bitwise_and(frame, frame, mask=mask3)
     bet_mask = cv.bitwise_or(mask2, mask)
     bet_mask2 = cv.bitwise_or(bet_mask, mask3)
     bet = cv.bitwise_or(frame, frame, mask=bet_mask2)
 
-    bet_con = bet.copy()
+    #bet_con = bet.copy()
 
     #boxes = b_cascade.detectMultiScale(gray, 1.3, 5)
     #for (x,y,w,h) in boxes:
@@ -98,7 +96,7 @@ while 1:
     #    roi_gray = gray[y:y+h, x:x+w]
     #    roi_color = img1[y:y+h, x:x+w]
 
-    nole = np.zeros((bet.shape[0], bet.shape[1]))
+    #nole = np.zeros((bet.shape[0], bet.shape[1]))
     #imgray = cv.cvtColor(res3, cv.COLOR_BGR2GRAY)
     #rett, thresh = cv.threshold(imgray, 127, 0, 0)
     #contours, _ = cv.findContours(mask3.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)
@@ -110,6 +108,7 @@ while 1:
     #bet_cont = cv.bitwise_or(bet, bet, mask=mask3)
 
     contour, _ = cv.findContours( mask3.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE) # внешние контуры
+    contour2, _ = cv.findContours( mask.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)
     #a3, fc4 = cv.findContours( mask3.copy(), cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE) # многоуровневая иерархия
 
     #dc2 = cv.drawContours( bet.copy(), contour, -1, (0, 150, 0), 3)
@@ -117,25 +116,40 @@ while 1:
     #cv2.approxPolyDP()
 
     for i in contour:
-        cv.drawContours( bet_con, i, -1, (0, 150, 0), 3)
+        #cv.drawContours( bet_con, i, -1, (0, 150, 0), 3)
         #p;cv.drawContours( nole, i, -1, (0, 150, 0), 3)
         #cv.imshow("bet", nole)
         #print(i)
-    #moments = cv.moments(mask3.copy(), 1)
-    #dM01 = moments['m01']
-    #dM10 = moments['m10']
-    #dArea = moments['m00']
+        moments = cv.moments(i, 1)
+        dM01 = moments['m01']
+        dM10 = moments['m10']
+        dArea = moments['m00']
 
-    #if dArea > 150:
-    #    x = int(dM10 / dArea)
-    #    y = int(dM01 / dArea)
-    #    cv.circle(dc2, (x, y), 10, (255,0,255), -1)
+        if dArea > 500:
+            x = int(dM10 / dArea)
+            y = int(dM01 / dArea)
+            cv.circle(bet, (x, y), 10, (255,0,0), -1)
+            #print(x, y)
+    #print()
+    #cv.circle(bet_con, (bet.shape[1]//2, bet.shape[0]//2), 10, (0,255,0), -1)
+
+    for i in contour2:
+        moments = cv.moments(i, 1)
+        dM01 = moments['m01']
+        dM10 = moments['m10']
+        dArea = moments['m00']
+
+        if dArea > 500:
+            x = int(dM10 / dArea)
+            y = int(dM01 / dArea)
+            cv.circle(bet, (x, y), 10, (0,0,255), -1)
 
     #cv.namedWindow ( "dc2" , cv.WINDOW_NORMAL)
     #cv.imshow("frame", frame)
+    cv.imshow("mask", mask)
     #cv.imshow("bet", bet)
     #cv.imshow("bet1", dc)
-    cv.imshow("bet2", bet_con)
+    cv.imshow("bet2", bet)
     #cv.imshow("bet3", dc3)
     #cv.imshow("bet4", dc4)
 
