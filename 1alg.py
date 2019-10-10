@@ -44,7 +44,7 @@ def map_count(ab1, ac1, n, nn):
         ac = -ac
     if abb < 0:
         ab = -ab
-    print(ab, ac)
+
     return ab, ac
 
 def shoot(mou, dirX, dirY, rangee, nn = False):
@@ -115,7 +115,6 @@ def closest(arr, X, Y):
         cv.circle(img, (int(m[0]+X/2), int(m[1]+Y/2)), 15, (0,0,255), -1)
         cv.putText(img, "%d" % (ma.sqrt(ma.fabs(m[0])**2 + ma.fabs(m[1])**2)), (int(m[0]+X/2)+10,int(m[1]+Y/2)-10), cv.FONT_HERSHEY_SIMPLEX, 1, (0,255,255), 2)
         cv.imshow("img", img)
-        #m[0], m[1] = m[0]+X/2, m[1]+Y/2
         return m
 
 def gtbp(name):
@@ -137,7 +136,7 @@ for _ in range(1):
     cr_tb = [["LH", 110, 255], ["LS", 100, 255], ["LV", 120, 255], ["UH", 130, 255], ["US", 255, 255], ["UV", 255, 255]]
     cr_tb2 = [["LH2", 0, 255], ["LS2", 0, 255], ["LV2", 0, 255], ["UH2", 0, 255], ["US2", 0, 255], ["UV2", 255, 255]]
     cr_tb3 = [["LH3", 0, 255], ["LS3", 255, 255], ["LV3", 111, 255], ["UH3", 0, 255], ["US3", 255, 255], ["UV3", 255, 255]]
-    cr_tb4 = [["LH4", 25, 255], ["LS4", 158, 255], ["LV4", 67, 255], ["UH4", 62, 255], ["US4", 200, 255], ["UV4", 255, 255]]
+    cr_tb4 = [["LH4", 30, 255], ["LS4", 158, 255], ["LV4", 67, 255], ["UH4", 62, 255], ["US4", 200, 255], ["UV4", 255, 255]]
     ctb(cr_tb4)
     ctb(cr_tb3)
     ctb(cr_tb2)
@@ -156,7 +155,7 @@ for _ in range(1):
     #cap_new.set(cv.CAP_PROP_FRAME_WIDTH , 1024)
     #cap_new.set(cv.CAP_PROP_FRAME_HEIGHT , 720)
 
-    #imggg = cv.imread("screenshoot10.png")
+    imggg = cv.imread("Brawl Stars_Screenshot_2019.10.10_21.59.28.jpg")
     pass
 
 left = 3 # 9
@@ -170,12 +169,12 @@ sct = mss()
 mou = Controller()
 an, bn = 1000, 700
 rang = 50
-start(mou, an, bn)
-step = 0.2
-time.sleep(8)
+#start(mou, an, bn)
+step = 0.3
+#time.sleep(8)
 
-for ina in range(100):
-#while 1:
+#for ina in range(75):
+while 1:
     #if m != 4:
     #    m += 1
     #elif m == 5:
@@ -200,12 +199,13 @@ for ina in range(100):
         l_b4, u_b4 = np.array([n[0], n[1], n[2]]), np.array([n[3], n[4], n[5]])
 
         mask = cv.inRange(hsv, l_b, u_b) # charapters
-        #res = cv.bitwise_and(frame, frame, mask=mask)
+        res = cv.bitwise_and(frame, frame, mask=mask)
         mask2 = cv.inRange(hsv, l_b2, u_b2) # walls
-        #res2 = cv.bitwise_and(frame, frame, mask=mask2)
+        res2 = cv.bitwise_and(frame, frame, mask=mask2)
         mask3 = cv.inRange(hsv, l_b3, u_b3) # boxes
-        #res3 = cv.bitwise_and(frame, frame, mask=mask3)
+        res3 = cv.bitwise_and(frame, frame, mask=mask3)
         mask4 = cv.inRange(hsv, l_b4, u_b4) # my circle
+        res4 = cv.bitwise_and(frame, frame, mask=mask4)
         bet_mask = cv.bitwise_or(mask2, mask)
         bet_mask2 = cv.bitwise_or(bet_mask, mask3)
         bet_mask3 = cv.bitwise_or(bet_mask2, mask4)
@@ -242,9 +242,8 @@ for ina in range(100):
             arr.append([x-(wid/2),y-(hei/2)])
 
     clo = closest(arr, wid, hei)
-    print(clo)
     if clo != False:
-        walk(mou, clo[0], clo[1], rang, step)#, True)
+        pass#walk(mou, clo[0], clo[1], rang, step)#, True)
 
     for i in contour2:
         moments = cv.moments(i, 1)
@@ -264,14 +263,14 @@ for ina in range(100):
     #print(frame.dtype)
     #bet = cv.bitwise_and(bet, points)
 
-    #cv.namedWindow ( "dc2" , cv.WINDOW_NORMAL)
+    #cv.namedWindow ( "орлоры" , cv.WINDOW_NORMAL)
     #cv.imshow("frame", frame)
-    #cv.imshow("mask", n_mask)
+    #cv.imshow("hsv", hsv)
+    #cv.imshow("res", res)
+    #cv.imshow("res2", res2)
+    #cv.imshow("res3", res3)
+    #cv.imshow("res4", res4)
     #cv.imshow("bet", bet)
-    #cv.imshow("bet1", dc)
-    #cv.imshow("bet2", bet)
-    #cv.imshow("bet3", dc3)
-    #cv.imshow("bet4", dc4)
 
     #if cv.waitKey(3) & 0xFF == ord('4'):
     #    cv.imwrite(f"screenshoot{nn+10}.png", bet)
@@ -282,6 +281,6 @@ for ina in range(100):
         cv.destroyAllWindows()
         break
 
-print("rjytw")
+print("end")
 #end(mou, an, bn)
 cap.release()
