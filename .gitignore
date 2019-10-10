@@ -1,4 +1,4 @@
-
+﻿
 *.png
 *.xml
 *.jpg
@@ -10,5 +10,4 @@ __pycache__/mose1.cpython-37.pyc
 модуль1.py
 модуль2.py
 mose1.py
-1alg (2).py
 alg2.py
