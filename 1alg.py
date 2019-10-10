@@ -99,14 +99,23 @@ def end(mou, an, bn):
     mou.position = (an+130, bn-680)
     mou.click(Button.left, 1)
 
-def closest(arr, midX, midY):
+def closest(arr, X, Y):
     if arr == []:
+        img = np.zeros((Y, X, 3), dtype = "uint8")
         return False
     else:
-        distX, distY = [], []
-        for i in arr:
-            distX.append(ma.fabs(i[0]))
-            distY.append(ma.fabs(i[1]))
+        img = np.zeros((Y, X, 3), dtype = "uint8")
+        m = arr[0]
+        for j in arr:
+            cv.circle(img, (int(j[0]+X/2), int(j[1]+Y/2)), 15, (255,0,0), 2)
+            cv.putText(img, "%d" % (ma.sqrt(ma.fabs(j[0])**2 + ma.fabs(j[1])**2)), (int(j[0]+X/2)+10,int(j[1]+Y/2)-10), cv.FONT_HERSHEY_SIMPLEX, 1, (0,255,255), 2)
+            new = ma.sqrt(ma.fabs(j[0])**2 + ma.fabs(j[1])**2)
+            old = ma.sqrt(ma.fabs(m[0])**2 + ma.fabs(m[1])**2)
+            if new < old:
+                m = j
+        cv.circle(img, (int(m[0]+X/2), int(m[1]+Y/2)), 15, (0,0,255), -1)
+        cv.putText(img, "%d" % (ma.sqrt(ma.fabs(m[0])**2 + ma.fabs(m[1])**2)), (int(m[0]+X/2)+10,int(m[1]+Y/2)-10), cv.FONT_HERSHEY_SIMPLEX, 1, (0,255,255), 2)
+        return m
 
 def gtbp(name):
     out_name = []
@@ -167,8 +176,11 @@ mou = Controller()
 an, bn = 1000, 700
 rang = 50
 start(mou, an, bn)
+arr = []
+step = 0.2
+time.sleep(8)
 
-for ina in range(500):
+for ina in range(100):
 #while 1:
     #if m != 4:
     #    m += 1
@@ -235,7 +247,6 @@ for ina in range(500):
     #contour3, _ = cv.findContours( mask4.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)
     #cv2.approxPolyDP()
 
-    arr = []
     for i in contour:
         moments = cv.moments(i, 1)
         dM01 = moments['m01']
@@ -246,12 +257,14 @@ for ina in range(500):
             x = dM10 / dArea
             y = dM01 / dArea
             cv.circle(bet, (int(x), int(y)), 10, (255,0,0), -1)
-            arr.append([x,y])
-    if arr != []:
-        print(arr, end = ",\n")
+            arr.append([x-(wid/2),y-(hei/2)])
+    #if arr != []:
+    #    print(arr, end = ",\n")
         #print()
-    #closest(arr, (bet.shape[1]//2, bet.shape[0]//2))
-            #walk(mou, ra(-100, 100), ra(-100, 100), rang, 0.1)
+    clo = closest(arr, wid, hei)
+    if clo != False:
+        walk(mou, clo[0], clo[1], rang, step)
+        arr = []
     #cv.circle(bet_con, (bet.shape[1]//2, bet.shape[0]//2), 10, (0,255,0), -1)
 
     for i in contour2:
@@ -278,7 +291,7 @@ for ina in range(500):
     #cv.imshow("mask", n_mask)
     #cv.imshow("bet", bet)
     #cv.imshow("bet1", dc)
-    cv.imshow("bet2", bet)
+    #cv.imshow("bet2", bet)
     #cv.imshow("bet3", dc3)
     #cv.imshow("bet4", dc4)
 
