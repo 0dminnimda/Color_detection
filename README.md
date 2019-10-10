@@ -1,2 +1,0 @@
-# Color_detection
- 
