@@ -1,4 +1,5 @@
 import numpy as np
+import scipy as sp
 import cv2 as cv
 from mss import mss
 import time
@@ -7,7 +8,10 @@ import os
 #from pynput import keyboard
 from pynput.mouse import Button, Controller
 import math as ma
+import random
 #from mose1 import map_count, shoot, walk, end
+
+ra = random.randint
 
 def nothing(x):
     pass
@@ -74,10 +78,10 @@ def walk(mou, dirX, dirY, rangee, tim, nn = False):
 
 def start(mou, an, bn):
     # разворачивание окна
-    mou.position = (460, 1400)
+    mou.position = (460, 1425)
     mou.click(Button.left, 1)
 
-    time.sleep(0.1)
+    time.sleep(5)
     # начало игры
     mou.position = (an, bn)
     mou.click(Button.left, 1)
@@ -94,6 +98,15 @@ def end(mou, an, bn):
     # сворачивание окна
     mou.position = (an+130, bn-680)
     mou.click(Button.left, 1)
+
+def closest(arr, midX, midY):
+    if arr == []:
+        return False
+    else:
+        distX, distY = [], []
+        for i in arr:
+            distX.append(ma.fabs(i[0]))
+            distY.append(ma.fabs(i[1]))
 
 def gtbp(name):
     out_name = []
@@ -113,7 +126,7 @@ cv.namedWindow("Tracking", cv.WINDOW_NORMAL)
 cr_tb = [["LH", 110, 255], ["LS", 100, 255], ["LV", 120, 255], ["UH", 130, 255], ["US", 255, 255], ["UV", 255, 255]]
 cr_tb2 = [["LH2", 0, 255], ["LS2", 0, 255], ["LV2", 0, 255], ["UH2", 0, 255], ["US2", 0, 255], ["UV2", 255, 255]]
 cr_tb3 = [["LH3", 0, 255], ["LS3", 255, 255], ["LV3", 111, 255], ["UH3", 0, 255], ["US3", 255, 255], ["UV3", 255, 255]]
-cr_tb4 = [["LH4", 0, 255], ["LS4", 0, 255], ["LV4", 0, 255], ["UH4", 255, 255], ["US4", 255, 255], ["UV4", 255, 255]]
+cr_tb4 = [["LH4", 25, 255], ["LS4", 158, 255], ["LV4", 67, 255], ["UH4", 62, 255], ["US4", 200, 255], ["UV4", 255, 255]]
 ctb(cr_tb4)
 ctb(cr_tb3)
 ctb(cr_tb2)
@@ -148,23 +161,15 @@ cap_new.set(cv.CAP_PROP_FPS, 5)
 
 #cv.imshow("bet2")
 
-for i in range(1):
-    print("bkjd")
+#for i in range(1):
+#    print("bkjd")
 mou = Controller()
 an, bn = 1000, 700
 rang = 50
-mou.position = (460, 1400)
-mou.click(Button.left, 1)
-#time.sleep(0.3)
-#mou.position = (an, bn)
-#mou.click(Button.left, 1)
-#start(mou, an, bn)
-time.sleep(10)
+start(mou, an, bn)
 
-for ina in range(50):
-    #if ina == 1:
-    #    mou.position = (an, bn)
-    #    mou.click(Button.left, 1)
+for ina in range(500):
+#while 1:
     #if m != 4:
     #    m += 1
     #elif m == 5:
@@ -172,7 +177,6 @@ for ina in range(50):
     #    continue
 
     #ret, frame = cap_new.read()
-    #print(type(ret),type(frame))
 
     img1 = np.array(sct.grab(bbox))
     frame = img1
@@ -198,6 +202,10 @@ for ina in range(50):
     bet_mask = cv.bitwise_or(mask2, mask)
     bet_mask2 = cv.bitwise_or(bet_mask, mask3)
     bet_mask3 = cv.bitwise_or(bet_mask2, mask4)
+    #n_mask = cv.bitwise_and(mask4, n_mask)
+    #res_n = cv.bitwise_and(frame, frame, mask=n_mask)
+    #bet_mask3 = cv.bitwise_or(bet_mask2, n_mask)
+    bet = cv.bitwise_or(frame, frame, mask=bet_mask3)
     #bet = cv.bitwise_or(frame, frame, mask=bet_mask3)
 
     #bet_con = bet.copy()
@@ -209,7 +217,8 @@ for ina in range(50):
     #    roi_color = img1[y:y+h, x:x+w]
 
     #n_mask = np.zeros_like((mask4.shape[0], mask4.shape[1]))
-    n_mask = np.zeros(mask4.shape[:2], dtype = "uint8")
+    #n_mask = np.zeros(mask4.shape[:2], dtype = "uint8")
+    #points_n = np.zeros(frame.shape[:2], dtype = "uint8")
     #print(type(nole), type(mask))
     #imgray = cv.cvtColor(res3, cv.COLOR_BGR2GRAY)
     #rett, thresh = cv.threshold(imgray, 127, 0, 0)
@@ -224,10 +233,9 @@ for ina in range(50):
     contour, _ = cv.findContours( mask3.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE) # boxes
     contour2, _ = cv.findContours( mask.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE) # charapters
     #contour3, _ = cv.findContours( mask4.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)
-
-    #dc2 = cv.drawContours( bet.copy(), contour, -1, (0, 150, 0), 3)
     #cv2.approxPolyDP()
 
+    arr = []
     for i in contour:
         moments = cv.moments(i, 1)
         dM01 = moments['m01']
@@ -235,9 +243,15 @@ for ina in range(50):
         dArea = moments['m00']
 
         if dArea > 500:
-            x = int(dM10 / dArea)
-            y = int(dM01 / dArea)
-            cv.circle(bet, (x, y), 10, (255,0,0), -1)
+            x = dM10 / dArea
+            y = dM01 / dArea
+            cv.circle(bet, (int(x), int(y)), 10, (255,0,0), -1)
+            arr.append([x,y])
+    if arr != []:
+        print(arr, end = ",\n")
+        #print()
+    #closest(arr, (bet.shape[1]//2, bet.shape[0]//2))
+            #walk(mou, ra(-100, 100), ra(-100, 100), rang, 0.1)
     #cv.circle(bet_con, (bet.shape[1]//2, bet.shape[0]//2), 10, (0,255,0), -1)
 
     for i in contour2:
@@ -247,17 +261,17 @@ for ina in range(50):
         dArea = moments['m00']
 
         if dArea > 500:
-            x = int(dM10 / dArea)
-            y = int(dM01 / dArea)
-            cv.circle(n_mask, (x, y+25), 55, (255,255,255), -1)
-            cv.circle(bet, (x, y), 10, 1, -1)
-            walk(mou, 0, -100, rang, 0.5)
-
+            x = dM10 / dArea
+            y = dM01 / dArea
+            #cv.circle(n_mask, (x-5, y+25), 60, (255,255,255), -1)
+            cv.circle(bet, (int(x), int(y)), 10, (0,255,0), -1)
+            #cv.imshow("bet", points)
+            
+    #points = cv.bitwise_and(points, points, mask = points)
     #print(mask4.size == n_mask.size)
-    n_mask = cv.bitwise_and(mask4, n_mask)
-    #res_n = cv.bitwise_and(frame, frame, mask=n_mask)
-    bet_mask3 = cv.bitwise_or(bet_mask2, n_mask)
-    bet = cv.bitwise_or(frame, frame, mask=bet_mask3)
+    
+    #print(frame.dtype)
+    #bet = cv.bitwise_and(bet, points)
 
     #cv.namedWindow ( "dc2" , cv.WINDOW_NORMAL)
     #cv.imshow("frame", frame)
@@ -267,8 +281,6 @@ for ina in range(50):
     cv.imshow("bet2", bet)
     #cv.imshow("bet3", dc3)
     #cv.imshow("bet4", dc4)
-
-    walk(Controller(), 0, -100, rang, 0.1)
 
     #if cv.waitKey(3) & 0xFF == ord('4'):
     #    cv.imwrite(f"screenshoot{nn+10}.png", bet)
@@ -280,5 +292,5 @@ for ina in range(50):
         break
 
 print("rjytw")
-end(mou, an, bn)
+#end(mou, an, bn)
 cap.release()
