@@ -97,7 +97,7 @@ def end(mou, an, bn):
     mou.position = (an+130, bn-680)
     mou.click(Button.left, 1)
 
-def closest(arr, X, Y):
+def closest(arr, X, Y, x0, y0):
     if arr == []:
         img = np.zeros((Y, X, 3), dtype = "uint8")
         cv.imshow("img", img)
@@ -105,15 +105,18 @@ def closest(arr, X, Y):
     else:
         img = np.zeros((Y, X, 3), dtype = "uint8")
         m = arr[0]
+        c = 0
         for j in arr:
-            cv.circle(img, (int(j[0]+X/2), int(j[1]+Y/2)), 15, (255,0,0), 2)
-            cv.putText(img, "%d" % (ma.sqrt(ma.fabs(j[0])**2 + ma.fabs(j[1])**2)), (int(j[0]+X/2)+10,int(j[1]+Y/2)-10), cv.FONT_HERSHEY_SIMPLEX, 1, (0,255,255), 2)
-            new = ma.sqrt(ma.fabs(j[0])**2 + ma.fabs(j[1])**2)
-            old = ma.sqrt(ma.fabs(m[0])**2 + ma.fabs(m[1])**2)
+            c += 1
+            new = ma.sqrt(ma.fabs(j[0]-x0)**2 + ma.fabs(j[1]-y0)**2)
+            old = ma.sqrt(ma.fabs(m[0]-x0)**2 + ma.fabs(m[1]-y0)**2)
+            cv.circle(img, (int(j[0]), int(j[1])), 15, (255,0,0), 2)
+            cv.putText(img, "%d" % new, (int(j[0])+10,int(j[1])-10), cv.FONT_HERSHEY_SIMPLEX, 1, (0,255,255), 2)
             if new < old:
                 m = j
-        cv.circle(img, (int(m[0]+X/2), int(m[1]+Y/2)), 15, (0,0,255), -1)
-        cv.putText(img, "%d" % (ma.sqrt(ma.fabs(m[0])**2 + ma.fabs(m[1])**2)), (int(m[0]+X/2)+10,int(m[1]+Y/2)-10), cv.FONT_HERSHEY_SIMPLEX, 1, (0,255,255), 2)
+        cv.circle(img, (int(m[0]), int(m[1])), 15, (0,0,255), -1)
+        cv.circle(img, (int(x0), int(y0)), 10, (0,0,255), 3)
+        cv.putText(img, "%d" % c, (int(x0)+10, int(y0)-10), cv.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), 2)
         cv.imshow("img", img)
         return m
 
@@ -165,15 +168,15 @@ hei = 770 - top
 
 bbox = {'top': top, 'left': left, 'width': wid, 'height': hei}
 sct = mss()
-
 mou = Controller()
 an, bn = 1000, 700
 rang = 50
-#start(mou, an, bn)
 step = 0.3
+
+#start(mou, an, bn)
 #time.sleep(8)
 
-#for ina in range(75):
+#for _ in range(600):
 while 1:
     #if m != 4:
     #    m += 1
@@ -239,9 +242,9 @@ while 1:
             x = dM10 / dArea
             y = dM01 / dArea
             cv.circle(bet, (int(x), int(y)), 10, (255,0,0), -1)
-            arr.append([x-(wid/2),y-(hei/2)])
+            arr.append([x,y])
 
-    clo = closest(arr, wid, hei)
+    clo = closest(arr, wid, hei, wid/2, hei/2)
     if clo != False:
         pass#walk(mou, clo[0], clo[1], rang, step)#, True)
 
