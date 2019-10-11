@@ -118,7 +118,8 @@ def closest(arr, X, Y, x0, y0):
         cv.circle(img, (int(x0), int(y0)), 10, (0,0,255), 3)
         cv.putText(img, "%d" % c, (int(x0)+10, int(y0)-10), cv.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), 2)
         cv.imshow("img", img)
-        return m
+        m[0], m[1] = m[0]-x0, m[1]-y0
+        return m, old
 
 def gtbp(name):
     out_name = []
@@ -173,11 +174,11 @@ an, bn = 1000, 700
 rang = 50
 step = 0.3
 
-#start(mou, an, bn)
-#time.sleep(8)
+start(mou, an, bn)
+time.sleep(8)
 
-#for _ in range(600):
-while 1:
+for _ in range(600):
+#while 1:
     #if m != 4:
     #    m += 1
     #elif m == 5:
@@ -202,11 +203,11 @@ while 1:
         l_b4, u_b4 = np.array([n[0], n[1], n[2]]), np.array([n[3], n[4], n[5]])
 
         mask = cv.inRange(hsv, l_b, u_b) # charapters
-        res = cv.bitwise_and(frame, frame, mask=mask)
+        #res = cv.bitwise_and(frame, frame, mask=mask)
         mask2 = cv.inRange(hsv, l_b2, u_b2) # walls
-        res2 = cv.bitwise_and(frame, frame, mask=mask2)
+        #res2 = cv.bitwise_and(frame, frame, mask=mask2)
         mask3 = cv.inRange(hsv, l_b3, u_b3) # boxes
-        res3 = cv.bitwise_and(frame, frame, mask=mask3)
+        #res3 = cv.bitwise_and(frame, frame, mask=mask3)
         mask4 = cv.inRange(hsv, l_b4, u_b4) # my circle
         res4 = cv.bitwise_and(frame, frame, mask=mask4)
         bet_mask = cv.bitwise_or(mask2, mask)
@@ -228,8 +229,48 @@ while 1:
 
     contour, _ = cv.findContours( mask3.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE) # boxes
     contour2, _ = cv.findContours( mask.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE) # charapters
-    #contour3, _ = cv.findContours( mask4.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)
+    contour3, _ = cv.findContours( mask4.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE) # "me"
     #cv2.approxPolyDP()
+
+    arrx, arry = [], []
+    for i in contour3:
+        moments = cv.moments(i, 1)
+        dM01 = moments['m01']
+        dM10 = moments['m10']
+        dArea = moments['m00']
+
+        if dArea > 100:
+            x = dM10 / dArea
+            y = dM01 / dArea
+            #cv.circle(bet, (int(x), int(y)), 10, (0,255,255), -1)
+            arrx.append(x)
+            arry.append(y)
+
+    if arrx != []:
+        mea = (np.mean(arrx), np.mean(arry))
+        cv.circle(bet, (int(mea[0]), int(mea[1])), 10, (0,255,255), -1)
+        #print((mea[0], mea[1]),(mea[0]+50, mea[1]-50))
+        #cv.rectangle(bet, (int(mea[0]-37.5), int(mea[1])), (int(mea[0]+37.5), int(mea[1])-60), (0,255,255))
+    else:
+       mea = []
+    
+    x0, y0 = wid/2, hei/2
+    for i in contour2:
+        moments = cv.moments(i, 1)
+        dM01 = moments['m01']
+        dM10 = moments['m10']
+        dArea = moments['m00']
+
+        if dArea > 300:
+            x = dM10 / dArea
+            y = dM01 / dArea
+            cv.circle(bet, (int(x), int(y)), 10, (0,255,0), -1)
+            #cv.circle(n_mask, (x-5, y+25), 60, (255,255,255), -1)
+            #cv.imshow("bet", points)
+
+            if mea != [] and mea[0]-35 < x < mea[0]+35 and mea[1]-60 < y < mea[1]+15:
+                x0, y0 = x, y
+                cv.circle(bet, (int(x), int(y)), 20, (0,255,0), -1)
 
     arr = []
     for i in contour:
@@ -244,23 +285,13 @@ while 1:
             cv.circle(bet, (int(x), int(y)), 10, (255,0,0), -1)
             arr.append([x,y])
 
-    clo = closest(arr, wid, hei, wid/2, hei/2)
+    clo, dis = closest(arr, wid, hei, x0, y0)
+    if dis < 7:
+        break
+
     if clo != False:
-        pass#walk(mou, clo[0], clo[1], rang, step)#, True)
+        walk(mou, clo[0], clo[1], rang, step)#, True)
 
-    for i in contour2:
-        moments = cv.moments(i, 1)
-        dM01 = moments['m01']
-        dM10 = moments['m10']
-        dArea = moments['m00']
-
-        if dArea > 500:
-            x = dM10 / dArea
-            y = dM01 / dArea
-            #cv.circle(n_mask, (x-5, y+25), 60, (255,255,255), -1)
-            cv.circle(bet, (int(x), int(y)), 10, (0,255,0), -1)
-            #cv.imshow("bet", points)
-            
     #points = cv.bitwise_and(points, points, mask = points)
     #print(mask4.size == n_mask.size)
     #print(frame.dtype)
@@ -273,7 +304,7 @@ while 1:
     #cv.imshow("res2", res2)
     #cv.imshow("res3", res3)
     #cv.imshow("res4", res4)
-    #cv.imshow("bet", bet)
+    cv.imshow("bet", bet)
 
     #if cv.waitKey(3) & 0xFF == ord('4'):
     #    cv.imwrite(f"screenshoot{nn+10}.png", bet)
@@ -285,5 +316,5 @@ while 1:
         break
 
 print("end")
-#end(mou, an, bn)
+end(mou, an, bn)
 cap.release()
