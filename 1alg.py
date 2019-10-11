@@ -101,7 +101,7 @@ def closest(arr, X, Y, x0, y0):
     if arr == []:
         img = np.zeros((Y, X, 3), dtype = "uint8")
         cv.imshow("img", img)
-        return False
+        return False, False
     else:
         img = np.zeros((Y, X, 3), dtype = "uint8")
         m = arr[0]
@@ -172,13 +172,13 @@ sct = mss()
 mou = Controller()
 an, bn = 1000, 700
 rang = 50
-step = 0.3
+step = 0.2
 
 start(mou, an, bn)
 time.sleep(8)
 
-for _ in range(600):
-#while 1:
+#for _ in range(600):
+while 1:
     #if m != 4:
     #    m += 1
     #elif m == 5:
@@ -286,7 +286,7 @@ for _ in range(600):
             arr.append([x,y])
 
     clo, dis = closest(arr, wid, hei, x0, y0)
-    if dis < 7:
+    if dis < 10:
         break
 
     if clo != False:
