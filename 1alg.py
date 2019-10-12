@@ -8,21 +8,17 @@ import os
 #from pynput import keyboard
 from pynput.mouse import Button, Controller
 import math as ma
-import random
-#from mose1 import map_count, shoot, walk, end
-
-ra = random.randint
+from random import randint as ra
+import multiprocessing as mp
+from multiprocessing import Process
 
 def nothing(x):
     pass
     pass
 
-def map_count(ab1, ac1, n, nn):
-    #ab1, ac1 = input().split()
-    #ab1, ac1 = int(ab1), int(ac1)
+def map_count(ab1, ac1, n, nn = False):
     if nn == True:
-        ab1, ac1 = (-1292+ab1), (-730+ac1)
-    #n = 60
+        ab1, ac1 = (-1274+ab1), (-717+ac1)
     abb = ab1
     acc = ac1
     while ab1 > n or ac1 > n:
@@ -47,7 +43,7 @@ def map_count(ab1, ac1, n, nn):
 
     return ab, ac
 
-def shoot(mou, dirX, dirY, rangee, nn = False):
+def shoot(mou, dirX, dirY, rangee):
     mou.position = (1200, 650)
     t = 0.1**1.125
     #n = 20
@@ -64,15 +60,23 @@ def shoot(mou, dirX, dirY, rangee, nn = False):
     #time.sleep(0.234)
     pass
 
-def walk(mou, dirX, dirY, rangee, tim, nn = False):
+def walk(mou, dirX, dirY, rangee, tim):
     mou.position = (150, 660)
     t = 0.1**1.125
-    dirX, dirY = map_count(dirX, dirY, rangee, nn)
+    dirX, dirY = map_count(dirX, dirY, rangee)
     mou.press(Button.left)
     time.sleep(t/2)
     mou.move(dirX, dirY)
-    time.sleep(tim)
+    time.sleep(tim-t/2)
     mou.release(Button.left)
+
+def w_call(qq):
+    while 1:
+        key = qq.get()
+        if key == "b":
+            break
+        walk(*key)
+        pass
 
 def start(mou, an, bn):
     # разворачивание окна
@@ -135,186 +139,216 @@ def ctb(name):
     for i in name:
         cv.createTrackbar(i[0], "Tracking", i[1], i[2], nothing)
 
-for _ in range(1):
-    cv.namedWindow("Tracking", cv.WINDOW_NORMAL)
-    cr_tb = [["LH", 110, 255], ["LS", 100, 255], ["LV", 120, 255], ["UH", 130, 255], ["US", 255, 255], ["UV", 255, 255]]
-    cr_tb2 = [["LH2", 0, 255], ["LS2", 0, 255], ["LV2", 0, 255], ["UH2", 0, 255], ["US2", 0, 255], ["UV2", 255, 255]]
-    cr_tb3 = [["LH3", 0, 255], ["LS3", 255, 255], ["LV3", 111, 255], ["UH3", 0, 255], ["US3", 255, 255], ["UV3", 255, 255]]
-    cr_tb4 = [["LH4", 30, 255], ["LS4", 158, 255], ["LV4", 67, 255], ["UH4", 62, 255], ["US4", 200, 255], ["UV4", 255, 255]]
-    ctb(cr_tb4)
-    ctb(cr_tb3)
-    ctb(cr_tb2)
-    ctb(cr_tb)
-    name = ["LH","LS","LV","UH","US","UV"]
-    name2 = [i+"2" for i in name]
-    name3 = [i+"3" for i in name]
-    name4 = [i+"4" for i in name]
-
-    cap = cv.VideoCapture('2019-10-06 02-16-00.mp4')
-    cap2 = cv.VideoCapture('2019-10-06 02-17-30.mp4')
-    cap_new = cv.VideoCapture('2019-10-07 12-58-00.mp4')#2019-10-07 12-45-36.mp4')#2019-10-07 12-06-37.mp4')
-    cap_new.set(cv.CAP_PROP_FPS, 5)
-    #hei = cap_new.get(cv.CAP_PROP_FRAME_HEIGHT)
-    #wid = cap_new.get(cv.CAP_PROP_FRAME_WIDTH)
-    #cap_new.set(cv.CAP_PROP_FRAME_WIDTH , 1024)
-    #cap_new.set(cv.CAP_PROP_FRAME_HEIGHT , 720)
-
-    imggg = cv.imread("Brawl Stars_Screenshot_2019.10.10_21.59.28.jpg")
-    pass
-
-left = 3 # 9
-wid = 1295 - left # 1294
-top = 30 # 40
-hei = 770 - top
-
-bbox = {'top': top, 'left': left, 'width': wid, 'height': hei}
-sct = mss()
-mou = Controller()
-an, bn = 1000, 700
-rang = 50
-step = 0.2
-
-start(mou, an, bn)
-time.sleep(8)
-
-#for _ in range(600):
-while 1:
-    #if m != 4:
-    #    m += 1
-    #elif m == 5:
-    #    m -= 5
-    #    continue
-
-    #ret, frame = cap_new.read()
-
-    img1 = np.array(sct.grab(bbox))
-    frame = img1
-    hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
-    #gray = cv.cvtColor(bet, cv.COLOR_BGR2GRAY)
-
+def main_f():
     for _ in range(1):
-        n = gtbp(name)
-        l_b, u_b = np.array([n[0], n[1], n[2]]), np.array([n[3], n[4], n[5]])
-        n = gtbp(name2)
-        l_b2, u_b2 = np.array([n[0], n[1], n[2]]), np.array([n[3], n[4], n[5]])
-        n = gtbp(name3)
-        l_b3, u_b3 = np.array([n[0], n[1], n[2]]), np.array([n[3], n[4], n[5]])
-        n = gtbp(name4)
-        l_b4, u_b4 = np.array([n[0], n[1], n[2]]), np.array([n[3], n[4], n[5]])
+        cv.namedWindow("Tracking", cv.WINDOW_NORMAL)
+        cr_tb = [["LH", 110, 255], ["LS", 100, 255], ["LV", 120, 255], ["UH", 130, 255], ["US", 255, 255], ["UV", 255, 255]]
+        cr_tb2 = [["LH2", 0, 255], ["LS2", 0, 255], ["LV2", 0, 255], ["UH2", 0, 255], ["US2", 0, 255], ["UV2", 255, 255]]
+        cr_tb3 = [["LH3", 0, 255], ["LS3", 255, 255], ["LV3", 111, 255], ["UH3", 0, 255], ["US3", 255, 255], ["UV3", 255, 255]]
+        cr_tb4 = [["LH4", 30, 255], ["LS4", 158, 255], ["LV4", 67, 255], ["UH4", 62, 255], ["US4", 200, 255], ["UV4", 255, 255]]
+        ctb(cr_tb4)
+        ctb(cr_tb3)
+        ctb(cr_tb2)
+        ctb(cr_tb)
+        name = ["LH","LS","LV","UH","US","UV"]
+        name2 = [i+"2" for i in name]
+        name3 = [i+"3" for i in name]
+        name4 = [i+"4" for i in name]
 
-        mask = cv.inRange(hsv, l_b, u_b) # charapters
-        #res = cv.bitwise_and(frame, frame, mask=mask)
-        mask2 = cv.inRange(hsv, l_b2, u_b2) # walls
-        #res2 = cv.bitwise_and(frame, frame, mask=mask2)
-        mask3 = cv.inRange(hsv, l_b3, u_b3) # boxes
-        #res3 = cv.bitwise_and(frame, frame, mask=mask3)
-        mask4 = cv.inRange(hsv, l_b4, u_b4) # my circle
-        res4 = cv.bitwise_and(frame, frame, mask=mask4)
-        bet_mask = cv.bitwise_or(mask2, mask)
-        bet_mask2 = cv.bitwise_or(bet_mask, mask3)
-        bet_mask3 = cv.bitwise_or(bet_mask2, mask4)
-        #n_mask = cv.bitwise_and(mask4, n_mask)
-        #res_n = cv.bitwise_and(frame, frame, mask=n_mask)
-        #bet_mask3 = cv.bitwise_or(bet_mask2, n_mask)
-        bet = cv.bitwise_or(frame, frame, mask=bet_mask3)
-        #bet = cv.bitwise_or(frame, frame, mask=bet_mask3)
+        cap = cv.VideoCapture('2019-10-06 02-16-00.mp4')
+        cap2 = cv.VideoCapture('2019-10-06 02-17-30.mp4')
+        cap_new = cv.VideoCapture('2019-10-07 12-58-00.mp4')#2019-10-07 12-45-36.mp4')#2019-10-07 12-06-37.mp4')
+        cap_new.set(cv.CAP_PROP_FPS, 5)
+        #hei = cap_new.get(cv.CAP_PROP_FRAME_HEIGHT)
+        #wid = cap_new.get(cv.CAP_PROP_FRAME_WIDTH)
+        #cap_new.set(cv.CAP_PROP_FRAME_WIDTH , 1024)
+        #cap_new.set(cv.CAP_PROP_FRAME_HEIGHT , 720)
+
+        imggg = cv.imread("Brawl Stars_Screenshot_2019.10.10_21.59.28.jpg")
         pass
 
-    #n_mask = np.zeros_like((mask4.shape[0], mask4.shape[1]))
-    #n_mask = np.zeros(mask4.shape[:2], dtype = "uint8")
-    #points_n = np.zeros(frame.shape[:2], dtype = "uint8")
+    qq = mp.Queue()
+    pr = Process(target=w_call, args=(qq,), daemon=True)
+    c = 0
+    left = 3
+    wid = 1277 - left
+    top = 42
+    hei = 759 - top
 
-    #RETR_CCOMP или RETR_FLOODFILL
-    #bet_cont = cv.bitwise_or(bet, bet, mask=mask3)
+    sct = mss()
+    mou = Controller()
+    an, bn = 1000, 700
+    rang = 50
+    step = 1/15
 
-    contour, _ = cv.findContours( mask3.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE) # boxes
-    contour2, _ = cv.findContours( mask.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE) # charapters
-    contour3, _ = cv.findContours( mask4.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE) # "me"
-    #cv2.approxPolyDP()
+    start(mou, an, bn)
+    time.sleep(7.5)
+    pr.start()
 
-    arrx, arry = [], []
-    for i in contour3:
-        moments = cv.moments(i, 1)
-        dM01 = moments['m01']
-        dM10 = moments['m10']
-        dArea = moments['m00']
+    for _ in range(600):
+    #st = time.time()
+    #while 1:
+        #c += 1
+        #if m != 4:
+        #    m += 1
+        #elif m == 5:
+        #    m -= 5
+        #    continue
 
-        if dArea > 100:
-            x = dM10 / dArea
-            y = dM01 / dArea
-            #cv.circle(bet, (int(x), int(y)), 10, (0,255,255), -1)
-            arrx.append(x)
-            arry.append(y)
+        #ret, frame = cap_new.read()
 
-    if arrx != []:
-        mea = (np.mean(arrx), np.mean(arry))
-        cv.circle(bet, (int(mea[0]), int(mea[1])), 10, (0,255,255), -1)
-        #print((mea[0], mea[1]),(mea[0]+50, mea[1]-50))
-        #cv.rectangle(bet, (int(mea[0]-37.5), int(mea[1])), (int(mea[0]+37.5), int(mea[1])-60), (0,255,255))
-    else:
-       mea = []
+        img1 = np.array(sct.grab({'top': top, 'left': left, 'width': wid, 'height': hei}))
+        frame = img1
+        hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
+        #gray = cv.cvtColor(bet, cv.COLOR_BGR2GRAY)
+
+        for _ in range(1):
+            n = gtbp(name)
+            l_b, u_b = np.array([n[0], n[1], n[2]]), np.array([n[3], n[4], n[5]])
+            n = gtbp(name2)
+            l_b2, u_b2 = np.array([n[0], n[1], n[2]]), np.array([n[3], n[4], n[5]])
+            n = gtbp(name3)
+            l_b3, u_b3 = np.array([n[0], n[1], n[2]]), np.array([n[3], n[4], n[5]])
+            n = gtbp(name4)
+            l_b4, u_b4 = np.array([n[0], n[1], n[2]]), np.array([n[3], n[4], n[5]])
+
+            mask = cv.inRange(hsv, l_b, u_b) # charapters
+            #res = cv.bitwise_and(frame, frame, mask=mask)
+            mask2 = cv.inRange(hsv, l_b2, u_b2) # walls
+            #res2 = cv.bitwise_and(frame, frame, mask=mask2)
+            mask3 = cv.inRange(hsv, l_b3, u_b3) # boxes
+            #res3 = cv.bitwise_and(frame, frame, mask=mask3)
+            mask4 = cv.inRange(hsv, l_b4, u_b4) # my circle
+            res4 = cv.bitwise_and(frame, frame, mask=mask4)
+            bet_mask = cv.bitwise_or(mask2, mask)
+            bet_mask2 = cv.bitwise_or(bet_mask, mask3)
+            bet_mask3 = cv.bitwise_or(bet_mask2, mask4)
+            #n_mask = cv.bitwise_and(mask4, n_mask)
+            #res_n = cv.bitwise_and(frame, frame, mask=n_mask)
+            #bet_mask3 = cv.bitwise_or(bet_mask2, n_mask)
+            bet = cv.bitwise_or(frame, frame, mask=bet_mask3)
+            #bet = cv.bitwise_or(frame, frame, mask=bet_mask3)
+            pass
+
+        #n_mask = np.zeros_like((mask4.shape[0], mask4.shape[1]))
+        #n_mask = np.zeros(mask4.shape[:2], dtype = "uint8")
+        #points_n = np.zeros(frame.shape[:2], dtype = "uint8")
+
+        #RETR_CCOMP или RETR_FLOODFILL
+        #bet_cont = cv.bitwise_or(bet, bet, mask=mask3)
+
+        contour, _ = cv.findContours( mask3.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE) # boxes
+        contour2, _ = cv.findContours( mask.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE) # charapters
+        contour3, _ = cv.findContours( mask4.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE) # "me"
+        #cv2.approxPolyDP()
+
+        arrx, arry = [], []
+        for i in contour3:
+            moments = cv.moments(i, 1)
+            dM01 = moments['m01']
+            dM10 = moments['m10']
+            dArea = moments['m00']
+
+            if dArea > 100:
+                x = dM10 / dArea
+                y = dM01 / dArea
+                #cv.circle(bet, (int(x), int(y)), 10, (0,255,255), -1)
+                arrx.append(x)
+                arry.append(y)
+
+        if arrx != []:
+            mea = (np.mean(arrx), np.mean(arry))
+            cv.circle(bet, (int(mea[0]), int(mea[1])), 10, (0,255,255), -1)
+            #print((mea[0], mea[1]),(mea[0]+50, mea[1]-50))
+            #cv.rectangle(bet, (int(mea[0]-37.5), int(mea[1])), (int(mea[0]+37.5), int(mea[1])-60), (0,255,255))
+            pass
+        else:
+           mea = []
     
-    x0, y0 = wid/2, hei/2
-    for i in contour2:
-        moments = cv.moments(i, 1)
-        dM01 = moments['m01']
-        dM10 = moments['m10']
-        dArea = moments['m00']
+        x0, y0 = wid/2, hei/2
+        for i in contour2:
+            moments = cv.moments(i, 1)
+            dM01 = moments['m01']
+            dM10 = moments['m10']
+            dArea = moments['m00']
 
-        if dArea > 300:
-            x = dM10 / dArea
-            y = dM01 / dArea
-            cv.circle(bet, (int(x), int(y)), 10, (0,255,0), -1)
-            #cv.circle(n_mask, (x-5, y+25), 60, (255,255,255), -1)
-            #cv.imshow("bet", points)
+            if dArea > 300:
+                x = dM10 / dArea
+                y = dM01 / dArea
+                cv.circle(bet, (int(x), int(y)), 10, (0,255,0), -1)
+                #cv.circle(n_mask, (x-5, y+25), 60, (255,255,255), -1)
+                #cv.imshow("bet", points)
 
-            if mea != [] and mea[0]-35 < x < mea[0]+35 and mea[1]-60 < y < mea[1]+15:
-                x0, y0 = x, y
-                cv.circle(bet, (int(x), int(y)), 20, (0,255,0), -1)
+                if mea != [] and mea[0]-35 < x < mea[0]+35 and mea[1]-60 < y < mea[1]+15:
+                    x0, y0 = x, y
+                    cv.circle(bet, (int(x), int(y)), 20, (0,255,0), -1)
 
-    arr = []
-    for i in contour:
-        moments = cv.moments(i, 1)
-        dM01 = moments['m01']
-        dM10 = moments['m10']
-        dArea = moments['m00']
+        arr = []
+        for i in contour:
+            moments = cv.moments(i, 1)
+            dM01 = moments['m01']
+            dM10 = moments['m10']
+            dArea = moments['m00']
 
-        if dArea > 500:
-            x = dM10 / dArea
-            y = dM01 / dArea
-            cv.circle(bet, (int(x), int(y)), 10, (255,0,0), -1)
-            arr.append([x,y])
+            if dArea > 500:
+                x = dM10 / dArea
+                y = dM01 / dArea
+                cv.circle(bet, (int(x), int(y)), 10, (255,0,0), -1)
+                arr.append([x,y])
 
-    clo, dis = closest(arr, wid, hei, x0, y0)
-    if dis < 10:
-        break
+        clo, dis = closest(arr, wid, hei, x0, y0)
 
-    if clo != False:
-        walk(mou, clo[0], clo[1], rang, step)#, True)
+        if clo != False:
+            if 1:
+                qq.put((mou, clo[0], clo[1], rang, step))
+                key = (mou, clo[0], clo[1], rang, step)
+            else:
+                qq.put(key)
+            #pr.join()
 
-    #points = cv.bitwise_and(points, points, mask = points)
-    #print(mask4.size == n_mask.size)
-    #print(frame.dtype)
-    #bet = cv.bitwise_and(bet, points)
 
-    #cv.namedWindow ( "орлоры" , cv.WINDOW_NORMAL)
-    #cv.imshow("frame", frame)
-    #cv.imshow("hsv", hsv)
-    #cv.imshow("res", res)
-    #cv.imshow("res2", res2)
-    #cv.imshow("res3", res3)
-    #cv.imshow("res4", res4)
-    cv.imshow("bet", bet)
+            #pr = process(target=walk, args=(mou, clo[0], clo[1], rang, step))
+            #pr.start()
+            #pr.join()
+            #print(qq.get())
+            #st = time.time()
+            #walk(mou, clo[0], clo[1], rang, step)
+            #print(time.time()-st)
 
-    #if cv.waitKey(3) & 0xFF == ord('4'):
-    #    cv.imwrite(f"screenshoot{nn+10}.png", bet)
-    #    #cv.imwrite(f"screenshoot{nn+10}.jpg", bet)
-    #    nn += 1
+        #points = cv.bitwise_and(points, points, mask = points)
+        #print(mask4.size == n_mask.size)
+        #print(frame.dtype)
+        #bet = cv.bitwise_and(bet, points)
 
-    if cv.waitKey(1) & 0xFF == ord('2'):
-        cv.destroyAllWindows()
-        break
+        #cv.namedWindow ( "орлоры" , cv.WINDOW_NORMAL)
+        #cv.imshow("frame", frame)
+        #cv.imshow("hsv", hsv)
+        #cv.imshow("res", res)
+        #cv.imshow("res2", res2)
+        #cv.imshow("res3", res3)
+        #cv.imshow("res4", res4)
+        cv.imshow("bet", bet)
 
-print("end")
-end(mou, an, bn)
-cap.release()
+        #if cv.waitKey(3) & 0xFF == ord('4'):
+        #    cv.imwrite(f"screenshoot-t0.png", bet)
+        #    #cv.imwrite(f"screenshoot{nn+10}.jpg", bet)
+        #    #nn += 1
+
+        if dis < 5:
+            cv.destroyAllWindows()
+            break
+
+        if cv.waitKey(1) & 0xFF == ord('2'):
+            #print(c/(time.time()-st))
+            #print((time.time()-st)/c)
+            cv.destroyAllWindows()
+            break
+
+    print("end")
+    end(mou, an, bn)
+    cap.release()
+    qq.put("b")
+
+if __name__ == '__main__':
+
+    main_f()
