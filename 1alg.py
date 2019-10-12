@@ -306,15 +306,6 @@ def main_f():
                 qq.put(key)
             #pr.join()
 
-
-            #pr = process(target=walk, args=(mou, clo[0], clo[1], rang, step))
-            #pr.start()
-            #pr.join()
-            #print(qq.get())
-            #st = time.time()
-            #walk(mou, clo[0], clo[1], rang, step)
-            #print(time.time()-st)
-
         #points = cv.bitwise_and(points, points, mask = points)
         #print(mask4.size == n_mask.size)
         #print(frame.dtype)
