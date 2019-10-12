@@ -104,6 +104,9 @@ def end(mou, an, bn):
 def closest(arr, X, Y, x0, y0):
     if arr == []:
         img = np.zeros((Y, X, 3), dtype = "uint8")
+        cv.circle(img, (int(x0), int(y0)), 10, (0,0,255), 3)
+        cv.putText(img, "\" I \"", (int(x0)-35, int(y0)-30), cv.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), 2)
+        cv.putText(img, "0", (int(x0)-10, int(y0)+40), cv.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), 2)
         cv.imshow("img", img)
         return False, False
     else:
@@ -120,7 +123,8 @@ def closest(arr, X, Y, x0, y0):
                 m = j
         cv.circle(img, (int(m[0]), int(m[1])), 15, (0,0,255), -1)
         cv.circle(img, (int(x0), int(y0)), 10, (0,0,255), 3)
-        cv.putText(img, "%d" % c, (int(x0)+10, int(y0)-10), cv.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), 2)
+        cv.putText(img, "\" I \"", (int(x0)-35, int(y0)-30), cv.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), 2)
+        cv.putText(img, "%d" % c, (int(x0)-10, int(y0)+40), cv.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), 2)
         cv.imshow("img", img)
         m[0], m[1] = m[0]-x0, m[1]-y0
         return m, old
@@ -179,13 +183,13 @@ def main_f():
     mou = Controller()
     an, bn = 1000, 700
     rang = 50
-    step = 1/15
+    step = 1/18.5
 
     start(mou, an, bn)
-    time.sleep(7.5)
+    time.sleep(8)
     pr.start()
 
-    for _ in range(600):
+    for _ in range(200):
     #st = time.time()
     #while 1:
         #c += 1
@@ -223,24 +227,18 @@ def main_f():
             bet_mask = cv.bitwise_or(mask2, mask)
             bet_mask2 = cv.bitwise_or(bet_mask, mask3)
             bet_mask3 = cv.bitwise_or(bet_mask2, mask4)
-            #n_mask = cv.bitwise_and(mask4, n_mask)
-            #res_n = cv.bitwise_and(frame, frame, mask=n_mask)
-            #bet_mask3 = cv.bitwise_or(bet_mask2, n_mask)
             bet = cv.bitwise_or(frame, frame, mask=bet_mask3)
-            #bet = cv.bitwise_or(frame, frame, mask=bet_mask3)
             pass
 
-        #n_mask = np.zeros_like((mask4.shape[0], mask4.shape[1]))
-        #n_mask = np.zeros(mask4.shape[:2], dtype = "uint8")
         #points_n = np.zeros(frame.shape[:2], dtype = "uint8")
 
+        #cv2.approxPolyDP()
         #RETR_CCOMP или RETR_FLOODFILL
         #bet_cont = cv.bitwise_or(bet, bet, mask=mask3)
 
         contour, _ = cv.findContours( mask3.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE) # boxes
         contour2, _ = cv.findContours( mask.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE) # charapters
         contour3, _ = cv.findContours( mask4.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE) # "me"
-        #cv2.approxPolyDP()
 
         arrx, arry = [], []
         for i in contour3:
@@ -290,7 +288,7 @@ def main_f():
             dM10 = moments['m10']
             dArea = moments['m00']
 
-            if dArea > 500:
+            if dArea > 200:
                 x = dM10 / dArea
                 y = dM01 / dArea
                 cv.circle(bet, (int(x), int(y)), 10, (255,0,0), -1)
@@ -298,18 +296,15 @@ def main_f():
 
         clo, dis = closest(arr, wid, hei, x0, y0)
 
+        if dis < 10:
+            break
+
         if clo != False:
             if 1:
                 qq.put((mou, clo[0], clo[1], rang, step))
                 key = (mou, clo[0], clo[1], rang, step)
             else:
                 qq.put(key)
-            #pr.join()
-
-        #points = cv.bitwise_and(points, points, mask = points)
-        #print(mask4.size == n_mask.size)
-        #print(frame.dtype)
-        #bet = cv.bitwise_and(bet, points)
 
         #cv.namedWindow ( "орлоры" , cv.WINDOW_NORMAL)
         #cv.imshow("frame", frame)
@@ -325,16 +320,13 @@ def main_f():
         #    #cv.imwrite(f"screenshoot{nn+10}.jpg", bet)
         #    #nn += 1
 
-        if dis < 5:
-            cv.destroyAllWindows()
-            break
-
         if cv.waitKey(1) & 0xFF == ord('2'):
             #print(c/(time.time()-st))
             #print((time.time()-st)/c)
-            cv.destroyAllWindows()
             break
-
+    
+    sct.shot(output='die_screenshoot.png')
+    cv.destroyAllWindows()
     print("end")
     end(mou, an, bn)
     cap.release()
