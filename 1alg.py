@@ -172,7 +172,9 @@ def main_f():
         pass
 
     qq = mp.Queue()
+    #qq2 = mp.Queue()
     pr = Process(target=w_call, args=(qq,), daemon=True)
+    #pr2 = Process(target=w_call, args=(qq,), daemon=True)
     c = 0
     left = 3
     wid = 1277 - left
@@ -183,13 +185,13 @@ def main_f():
     mou = Controller()
     an, bn = 1000, 700
     rang = 50
-    step = 1/18.5
+    step = 1/16
 
     start(mou, an, bn)
     time.sleep(8)
     pr.start()
 
-    for _ in range(200):
+    for _ in range(300):
     #st = time.time()
     #while 1:
         #c += 1
