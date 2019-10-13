@@ -49,8 +49,8 @@ def shoot(mou, dirX, dirY, rangee):
     dirX, dirY = map_count(dirX, dirY, rangee)
     mou.press(Button.left)
     time.sleep(t/1.25)
-    mou.position = (1200+dirX, 650+dirY)
-    #mou.move(dirX, dirY)
+    #mou.position = (1200+dirX, 650+dirY)
+    mou.move(dirX, dirY)
     time.sleep(t/1.25)
     mou.release(Button.left)
     pass
@@ -61,7 +61,8 @@ def walk(mou, dirX, dirY, rangee, tim):
     dirX, dirY = map_count(dirX, dirY, rangee)
     mou.press(Button.left)
     time.sleep(t/2)
-    mou.move(dirX, dirY)
+    mou.position = (1200+dirX, 650+dirY)
+    #mou.move(dirX, dirY)
     time.sleep(tim-t/2)
     mou.release(Button.left)
 
