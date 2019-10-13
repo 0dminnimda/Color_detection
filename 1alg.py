@@ -46,18 +46,13 @@ def map_count(ab1, ac1, n, nn = False):
 def shoot(mou, dirX, dirY, rangee):
     mou.position = (1200, 650)
     t = 0.1**1.125
-    #n = 20
     dirX, dirY = map_count(dirX, dirY, rangee)
-    #pos = mou.position
     mou.press(Button.left)
-    #for i in range(n):
-        #print(mou.position)
-    time.sleep(t/1.25)#/n)
-    mou.move(dirX, dirY)#/n)
-    time.sleep(t/1.25)#/n)
+    time.sleep(t/1.25)
+    mou.position = (1200+dirX, 650+dirY)
+    #mou.move(dirX, dirY)
+    time.sleep(t/1.25)
     mou.release(Button.left)
-    #mou.position = pos
-    #time.sleep(0.234)
     pass
 
 def walk(mou, dirX, dirY, rangee, tim):
@@ -312,8 +307,8 @@ def main_f():
 
         if clo != False:
             if 1:
-                qq.put((mou, -clo[0], -clo[1], rang, step))
-                key = (mou, -clo[0], -clo[1], rang, step)
+                qq.put((mou, clo[0], clo[1], rang, step))
+                key = (mou, clo[0], clo[1], rang, step)
                 qq2.put((mou, clo[0], clo[1], rang))
                 key2 = (mou, clo[0], clo[1], rang)
             else:
