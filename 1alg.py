@@ -47,7 +47,7 @@ def shoot(mou, dirX, dirY, rangee):
     mou.position = (1200, 650)
     t = 0.1**1.125
     #n = 20
-    dirX, dirY = map_count(dirX, dirY, rangee, nn)
+    dirX, dirY = map_count(dirX, dirY, rangee)
     #pos = mou.position
     mou.press(Button.left)
     #for i in range(n):
@@ -76,6 +76,14 @@ def w_call(qq):
         if key == "b":
             break
         walk(*key)
+        pass
+
+def s_call(qq):
+    while 1:
+        key = qq.get()
+        if key == "b":
+            break
+        shoot(*key)
         pass
 
 def start(mou, an, bn):
@@ -172,9 +180,9 @@ def main_f():
         pass
 
     qq = mp.Queue()
-    #qq2 = mp.Queue()
+    qq2 = mp.Queue()
     pr = Process(target=w_call, args=(qq,), daemon=True)
-    #pr2 = Process(target=w_call, args=(qq,), daemon=True)
+    pr2 = Process(target=s_call, args=(qq2,), daemon=True)
     c = 0
     left = 3
     wid = 1277 - left
@@ -190,6 +198,7 @@ def main_f():
     start(mou, an, bn)
     time.sleep(8)
     pr.start()
+    pr2.start()
 
     for _ in range(300):
     #st = time.time()
@@ -303,10 +312,13 @@ def main_f():
 
         if clo != False:
             if 1:
-                qq.put((mou, clo[0], clo[1], rang, step))
-                key = (mou, clo[0], clo[1], rang, step)
+                qq.put((mou, -clo[0], -clo[1], rang, step))
+                key = (mou, -clo[0], -clo[1], rang, step)
+                qq2.put((mou, clo[0], clo[1], rang))
+                key2 = (mou, clo[0], clo[1], rang)
             else:
                 qq.put(key)
+                qq2.put(key2)
 
         #cv.namedWindow ( "орлоры" , cv.WINDOW_NORMAL)
         #cv.imshow("frame", frame)
@@ -333,6 +345,7 @@ def main_f():
     end(mou, an, bn)
     cap.release()
     qq.put("b")
+    qq2.put("b")
 
 if __name__ == '__main__':
 
