@@ -5,8 +5,8 @@ from mss import mss
 import time
 from pynput import mouse
 import os
-#from pynput import keyboard
-from pynput.mouse import Button, Controller
+from pynput.mouse import Button, Controller as m_c
+from pynput.keyboard import Key, Controller as k_c
 import math as ma
 from random import randint as ra
 import multiprocessing as mp
@@ -65,6 +65,46 @@ def walk(mou, dirX, dirY, rangee, tim):
     #mou.move(dirX, dirY)
     time.sleep(tim-t/2)
     mou.release(Button.left)
+
+def k_prel(lit, key, ti):
+    key.press(lit)
+    time.sleep(ti)
+    key.release(lit)
+
+def k_dou_prel(lit1, lit2, key, ti):
+    key.press(lit1)
+    key.press(lit2)
+    time.sleep(ti)
+    key.release(lit1)
+    key.release(lit2)
+
+def wolk_key(key, dirX, dirY):
+    dirX, dirY = map_count(dirX, dirY, 1)
+    x,y = True, True
+    if dirX < 0:
+        x = not x
+    if dirY < 0:
+        y= not y
+
+    if dirX > dirY:
+        ang = ma.degrees(ma.tan(ma.fabs(dirY)/ma.fabs(dirX)))
+    elif dirX < dirY:
+        ang = ma.degrees(ma.tan(ma.fabs(dirX)/ma.fabs(dirY)))
+    else:
+        raise RuntimeError
+
+    if ang 
+    k_prel('ц', key, 0.5)
+    k_dou_prel('ц', 'ф', key, 0.5)
+
+    k_prel('ф', key, 0.5)
+    k_dou_prel('ф', 'ы', key, 0.5)
+
+    k_prel('ы', key, 0.5)
+    k_dou_prel('ы', 'в', key, 0.5)
+
+    k_prel('в', key, 0.5)
+    k_dou_prel('в', 'ц', key, 0.5)
 
 def w_call(qq):
     while 1:
@@ -179,14 +219,16 @@ def main_f():
     qq2 = mp.Queue()
     pr = Process(target=w_call, args=(qq,), daemon=True)
     pr2 = Process(target=s_call, args=(qq2,), daemon=True)
-    c = 0
+    #c = 0
     left = 3
     wid = 1277 - left
     top = 42
     hei = 759 - top
 
     sct = mss()
-    mou = Controller()
+    mou = m_c()
+    key = k_c()
+
     an, bn = 1000, 700
     rang = 50
     step = 1/16
@@ -196,7 +238,9 @@ def main_f():
     pr.start()
     pr2.start()
 
-    for _ in range(300):
+    wolk_key(key)
+
+    for _ in range(00):
     #st = time.time()
     #while 1:
         #c += 1
@@ -308,15 +352,15 @@ def main_f():
 
         if clo != False:
             if 1:
-                qq.put((mou, clo[0], clo[1], rang, step))
-                key = (mou, clo[0], clo[1], rang, step)
+                qq.put((mou, clo[0], clo[1])) #, rang, step))
+                qq_key = (mou, clo[0], clo[1]) #, rang, step)
                 qq2.put((mou, clo[0], clo[1], rang))
-                key2 = (mou, clo[0], clo[1], rang)
+                qq_key2 = (mou, clo[0], clo[1], rang)
             else:
-                qq.put(key)
-                qq2.put(key2)
+                qq.put(qq_key)
+                qq2.put(qq_key2)
 
-        #cv.namedWindow ( "орлоры" , cv.WINDOW_NORMAL)
+        #cv.namedWindow("орлоры", cv.WINDOW_NORMAL)
         #cv.imshow("frame", frame)
         #cv.imshow("hsv", hsv)
         #cv.imshow("res", res)
