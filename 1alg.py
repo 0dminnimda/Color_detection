@@ -3,7 +3,7 @@ import scipy as sp
 import cv2 as cv
 from mss import mss
 import time
-from pynput import mouse
+#from pynput import mouse
 import os
 from pynput.mouse import Button, Controller as m_c
 from pynput.keyboard import Key, Controller as k_c
@@ -61,8 +61,8 @@ def walk(mou, dirX, dirY, rangee, tim):
     dirX, dirY = map_count(dirX, dirY, rangee)
     mou.press(Button.left)
     time.sleep(t/2)
-    mou.position = (1200+dirX, 650+dirY)
-    #mou.move(dirX, dirY)
+    #mou.position = (1200+dirX, 650+dirY)
+    mou.move(dirX, dirY)
     time.sleep(tim-t/2)
     mou.release(Button.left)
 
@@ -78,40 +78,54 @@ def k_dou_prel(lit1, lit2, key, ti):
     key.release(lit1)
     key.release(lit2)
 
-def wolk_key(key, dirX, dirY):
-    dirX, dirY = map_count(dirX, dirY, 1)
-    x,y = True, True
-    if dirX < 0:
-        x = not x
-    if dirY < 0:
-        y= not y
+def walk_key(key, dirX, dirY):
+    dirX, dirY = map_count(dirX, dirY, 100)
 
-    if dirX > dirY:
-        ang = ma.degrees(ma.tan(ma.fabs(dirY)/ma.fabs(dirX)))
-    elif dirX < dirY:
-        ang = ma.degrees(ma.tan(ma.fabs(dirX)/ma.fabs(dirY)))
-    else:
-        raise RuntimeError
+    if dirX == 100 and -50 < dirY < 50:
+        k_prel('в', key, 0.5) # 1
 
-    if ang 
-    k_prel('ц', key, 0.5)
-    k_dou_prel('ц', 'ф', key, 0.5)
+    elif 50 <= dirX <= 100 and 50 <= dirY <= 100:
+        k_dou_prel('ц', 'ф', key, 0.5) # 23
 
-    k_prel('ф', key, 0.5)
-    k_dou_prel('ф', 'ы', key, 0.5)
+    elif dirY == 100 and -50 < dirX < 50:
+        k_prel('ы', key, 0.5) # 4
 
-    k_prel('ы', key, 0.5)
-    k_dou_prel('ы', 'в', key, 0.5)
+    elif -100 <= dirX <= -50 and 50 <= dirY <= 100:
+        k_dou_prel('ф', 'ы', key, 0.5) # 34
 
-    k_prel('в', key, 0.5)
-    k_dou_prel('в', 'ц', key, 0.5)
+    elif dirX == -100 and -50 < dirY < 50:
+        k_prel('ф', key, 0.5) # 3
+
+    elif -100 <= dirX <= -50 and -100 <= dirY <= -50:
+        k_dou_prel('в', 'ц', key, 0.5) # 12
+
+    elif dirY == -100 and -50 < dirX < 50:
+        k_prel('ц', key, 0.5) # 2
+
+    elif 50 <= dirX <= 100 and -100 <= dirY <= -50:
+        k_dou_prel('ы', 'в', key, 0.5) # 41
+
+    #k_prel('ц', key, 0.5) # 2
+    #k_dou_prel('ц', 'ф', key, 0.5) # 23
+
+    #k_prel('ф', key, 0.5) # 3
+    #k_dou_prel('ф', 'ы', key, 0.5) # 34
+
+    #k_prel('ы', key, 0.5) # 4
+    #k_dou_prel('ы', 'в', key, 0.5) # 41
+
+    #k_prel('в', key, 0.5) # 1
+    #k_dou_prel('в', 'ц', key, 0.5) # 12
+
 
 def w_call(qq):
+    ke = k_c()
     while 1:
         key = qq.get()
         if key == "b":
             break
-        walk(*key)
+        walk_key(ke,*key)
+        #walk(*key)
         pass
 
 def s_call(qq):
@@ -216,9 +230,9 @@ def main_f():
         pass
 
     qq = mp.Queue()
-    qq2 = mp.Queue()
+    #qq2 = mp.Queue()
     pr = Process(target=w_call, args=(qq,), daemon=True)
-    pr2 = Process(target=s_call, args=(qq2,), daemon=True)
+    #pr2 = Process(target=s_call, args=(qq2,), daemon=True)
     #c = 0
     left = 3
     wid = 1277 - left
@@ -227,7 +241,7 @@ def main_f():
 
     sct = mss()
     mou = m_c()
-    key = k_c()
+    #key = k_c()
 
     an, bn = 1000, 700
     rang = 50
@@ -236,11 +250,9 @@ def main_f():
     start(mou, an, bn)
     time.sleep(8)
     pr.start()
-    pr2.start()
+    #pr2.start()
 
-    wolk_key(key)
-
-    for _ in range(00):
+    for _ in range(400):
     #st = time.time()
     #while 1:
         #c += 1
@@ -348,17 +360,20 @@ def main_f():
         clo, dis = closest(arr, wid, hei, x0, y0)
 
         if dis < 10:
-            break
+            pass#break
 
         if clo != False:
             if 1:
-                qq.put((mou, clo[0], clo[1])) #, rang, step))
-                qq_key = (mou, clo[0], clo[1]) #, rang, step)
-                qq2.put((mou, clo[0], clo[1], rang))
-                qq_key2 = (mou, clo[0], clo[1], rang)
+                #print(clo)
+                qq.put((clo[0], clo[1]))
+                qq_key = (clo[0], clo[1])
+                #qq.put((mou, clo[0], clo[1], rang, step))
+                #qq_key = (mou, clo[0], clo[1], rang, step)
+                #qq2.put((mou, clo[0], clo[1], rang))
+                #qq_key2 = (mou, clo[0], clo[1], rang)
             else:
                 qq.put(qq_key)
-                qq2.put(qq_key2)
+                #qq2.put(qq_key2)
 
         #cv.namedWindow("орлоры", cv.WINDOW_NORMAL)
         #cv.imshow("frame", frame)
@@ -384,8 +399,8 @@ def main_f():
     print("end")
     end(mou, an, bn)
     cap.release()
-    qq.put("b")
-    qq2.put("b")
+    #qq.put("b")
+    #qq2.put("b")
 
 if __name__ == '__main__':
 
