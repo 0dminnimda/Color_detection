@@ -79,31 +79,86 @@ def k_dou_prel(lit1, lit2, key, ti):
     key.release(lit2)
 
 def walk_key(key, dirX, dirY):
-    dirX, dirY = map_count(dirX, dirY, 100)
 
-    if dirX == 100 and -50 < dirY < 50:
-        k_prel('в', key, 0.5) # 1
+    n1 = 25
+    n2 = n1 + n1*ma.sqrt(2)
 
-    elif 50 <= dirX <= 100 and 50 <= dirY <= 100:
-        k_dou_prel('ц', 'ф', key, 0.5) # 23
+    t = 0.2
 
-    elif dirY == 100 and -50 < dirX < 50:
-        k_prel('ы', key, 0.5) # 4
+    x, y = map_count(dirX, dirY, n2)
+    y = -y
+    dirX, dirY = ma.fabs(x), ma.fabs(y)
 
-    elif -100 <= dirX <= -50 and 50 <= dirY <= 100:
-        k_dou_prel('ф', 'ы', key, 0.5) # 34
+    print(x, y)
+    if x == n2:
+        k_prel('в', key, t)
+    elif x == -n2:
+        k_prel('ф', key, t)
 
-    elif dirX == -100 and -50 < dirY < 50:
-        k_prel('ф', key, 0.5) # 3
+    if y == n2:
+        k_prel('в', key, t)
+    elif y == -n2:
+        k_prel('ы', key, t)
 
-    elif -100 <= dirX <= -50 and -100 <= dirY <= -50:
-        k_dou_prel('в', 'ц', key, 0.5) # 12
+    #if 0 <= dirX <= n1 and 0 <= dirY <= n1: # diag
+    #    if x > 0 and y > 0:
+    #        k_dou_prel('в', 'ц', key, t)
+    #        print("diag ++")
+    #    elif x < 0 and y > 0:
+    #        k_dou_prel('ц', 'ф', key, t)
+    #        print("diag -+")
+    #    elif x < 0 and y < 0:
+    #        k_dou_prel('ф', 'ы', key, t)
+    #        print("diag --")
+    #    elif x > 0 and y < 0:
+    #        k_dou_prel('ы', 'в', key, t)
+    #        print("diag +-")
 
-    elif dirY == -100 and -50 < dirX < 50:
-        k_prel('ц', key, 0.5) # 2
+    #elif 0 <= dirX <= n1 and n1 < dirY <= n2: # up
+    #    if x > 0 and y > 0:
+    #        k_prel('ц', key, t)
+    #        print("up ++")
+    #    elif x < 0 and y > 0:
+    #        k_prel('ф', key, t)
+    #        print("up -+")
+    #    elif x < 0 and y < 0:
+    #        k_prel('ы', key, t)
+    #        print("up --")
+    #    elif x > 0 and y < 0:
+    #        k_prel('в', key, t)
+    #        print("up +-")
 
-    elif 50 <= dirX <= 100 and -100 <= dirY <= -50:
-        k_dou_prel('ы', 'в', key, 0.5) # 41
+    #elif n1 < dirX <= n2 and 0 <= dirY <= n1: # right
+    #    if x > 0 and y > 0:
+    #        k_prel('ф', key, t)
+    #        print("right ++")
+    #    elif x < 0 and y > 0:
+    #        k_prel('ц', key, t)
+    #        print("right -+")
+    #    elif x < 0 and y < 0:
+    #        k_prel('в', key, t)
+    #        print("right --")
+    #    elif x > 0 and y < 0:
+    #        k_prel('ы', key, t)
+    #        print("right +-")
+
+    #elif n1 < dirX <= n2 and n1 < dirY <= n2: # strange
+    #    if x > 0 and y > 0:
+    #        k_prel('ф', key, t)
+    #        print("strange ++")
+    #    elif x < 0 and y > 0:
+    #        k_prel('ц', key, t)
+    #        print("strange -+")
+    #    elif x < 0 and y < 0:
+    #        k_prel('в', key, t)
+    #        print("strange --")
+    #    elif x > 0 and y < 0:
+    #        k_prel('ы', key, t)
+    #        print("strange +-")
+
+    #else:
+    #    print(dirX, dirY, x, y, n1, n2)
+    #    raise RuntimeError
 
     #k_prel('ц', key, 0.5) # 2
     #k_dou_prel('ц', 'ф', key, 0.5) # 23
@@ -116,16 +171,21 @@ def walk_key(key, dirX, dirY):
 
     #k_prel('в', key, 0.5) # 1
     #k_dou_prel('в', 'ц', key, 0.5) # 12
-
+    pass
 
 def w_call(qq):
     ke = k_c()
+    c = 0
     while 1:
+        if c % 2 == 0:
+            c += 1
+            continue
+        else:
+            c -= 2
         key = qq.get()
         if key == "b":
             break
         walk_key(ke,*key)
-        #walk(*key)
         pass
 
 def s_call(qq):
@@ -247,14 +307,14 @@ def main_f():
     rang = 50
     step = 1/16
 
-    start(mou, an, bn)
-    time.sleep(8)
+    #start(mou, an, bn)
+    #time.sleep(8)
     pr.start()
     #pr2.start()
 
-    for _ in range(400):
+    #for _ in range(400):
     #st = time.time()
-    #while 1:
+    while 1:
         #c += 1
         #if m != 4:
         #    m += 1
@@ -366,13 +426,15 @@ def main_f():
             if 1:
                 #print(clo)
                 qq.put((clo[0], clo[1]))
-                qq_key = (clo[0], clo[1])
+                #qq_key = (clo[0], clo[1])
+
                 #qq.put((mou, clo[0], clo[1], rang, step))
                 #qq_key = (mou, clo[0], clo[1], rang, step)
                 #qq2.put((mou, clo[0], clo[1], rang))
                 #qq_key2 = (mou, clo[0], clo[1], rang)
             else:
-                qq.put(qq_key)
+                pass
+                #qq.put(qq_key)
                 #qq2.put(qq_key2)
 
         #cv.namedWindow("орлоры", cv.WINDOW_NORMAL)
@@ -395,11 +457,11 @@ def main_f():
             break
     
     sct.shot(output='die_screenshoot.png')
-    cv.destroyAllWindows()
+    qq.put("b")
+    #cv.destroyAllWindows()
     print("end")
     end(mou, an, bn)
     cap.release()
-    #qq.put("b")
     #qq2.put("b")
 
 if __name__ == '__main__':
