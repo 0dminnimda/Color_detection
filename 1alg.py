@@ -3,7 +3,6 @@ import scipy as sp
 import cv2 as cv
 from mss import mss
 import time
-#from pynput import mouse
 import os
 from pynput.mouse import Button, Controller as m_c
 from pynput.keyboard import Key, Controller as k_c
@@ -82,22 +81,23 @@ def walk_key(key, dirX, dirY):
 
     n1 = 25
     n2 = n1 + n1*ma.sqrt(2)
+    an = n2/3
 
-    t = 0.2
+    t = 0.075
 
     x, y = map_count(dirX, dirY, n2)
     y = -y
     dirX, dirY = ma.fabs(x), ma.fabs(y)
 
     print(x, y)
-    if x == n2:
+    if n2-an <= x <= n2+an:
         k_prel('в', key, t)
-    elif x == -n2:
+    elif -n2-an <= x <= -n2+an:
         k_prel('ф', key, t)
 
-    if y == n2:
-        k_prel('в', key, t)
-    elif y == -n2:
+    if n2-an <= y <= n2+an:
+        k_prel('ц', key, t)
+    elif -n2-an <= y <= -n2+an:
         k_prel('ы', key, t)
 
     #if 0 <= dirX <= n1 and 0 <= dirY <= n1: # diag
@@ -175,24 +175,14 @@ def walk_key(key, dirX, dirY):
 
 def w_call(qq):
     ke = k_c()
-    c = 0
     while 1:
-        if c % 2 == 0:
-            c += 1
-            continue
-        else:
-            c -= 2
         key = qq.get()
-        if key == "b":
-            break
         walk_key(ke,*key)
         pass
 
 def s_call(qq):
     while 1:
         key = qq.get()
-        if key == "b":
-            break
         shoot(*key)
         pass
 
@@ -290,10 +280,16 @@ def main_f():
         pass
 
     qq = mp.Queue()
+    qq_2 = mp.Queue()
+    #qq_3 = mp.Queue()
     #qq2 = mp.Queue()
     pr = Process(target=w_call, args=(qq,), daemon=True)
+    pr_2 = Process(target=w_call, args=(qq_2,), daemon=True)
+    #pr_3 = Process(target=w_call, args=(qq_3,), daemon=True)
     #pr2 = Process(target=s_call, args=(qq2,), daemon=True)
-    #c = 0
+    val = 2
+    c, c2 = 0, val//2
+
     left = 3
     wid = 1277 - left
     top = 42
@@ -310,12 +306,13 @@ def main_f():
     #start(mou, an, bn)
     #time.sleep(8)
     pr.start()
+    pr_2.start()
+    #pr_3.start()
     #pr2.start()
 
     #for _ in range(400):
     #st = time.time()
     while 1:
-        #c += 1
         #if m != 4:
         #    m += 1
         #elif m == 5:
@@ -422,18 +419,28 @@ def main_f():
         if dis < 10:
             pass#break
 
+        c += 1
+        c2 += 1
+        #c3 += 1
         if clo != False:
-            if 1:
-                #print(clo)
+            if c % val == 0:
+                c -= val
                 qq.put((clo[0], clo[1]))
                 #qq_key = (clo[0], clo[1])
 
+            #if c2 % val == 0:
+            #    c2 -= val
+            #    qq_2.put((clo[0], clo[1]))
+
+            #if c3 % val == 0:
+            #    c3 -= val
+            #    qq_3.put((clo[0], clo[1]))
                 #qq.put((mou, clo[0], clo[1], rang, step))
                 #qq_key = (mou, clo[0], clo[1], rang, step)
                 #qq2.put((mou, clo[0], clo[1], rang))
                 #qq_key2 = (mou, clo[0], clo[1], rang)
-            else:
-                pass
+            #else:
+                #pass
                 #qq.put(qq_key)
                 #qq2.put(qq_key2)
 
@@ -457,12 +464,13 @@ def main_f():
             break
     
     sct.shot(output='die_screenshoot.png')
-    qq.put("b")
-    #cv.destroyAllWindows()
+    pr.terminate()
+    pr_2.terminate()
+    #pr_3.terminate()
+    cv.destroyAllWindows()
     print("end")
-    end(mou, an, bn)
+    #end(mou, an, bn)
     cap.release()
-    #qq2.put("b")
 
 if __name__ == '__main__':
 
