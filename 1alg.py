@@ -129,14 +129,13 @@ def walk_key(key, dirX, dirY, t):
     else:
         raise RuntimeError
 
-    print(x, y)#, val)
+    #print(x, y)#, val)
     pass
 
 def w_call(qq):
     ke = k_c()
     while 1:
-        #key = qq#.get()
-        if qq != [0,0,0]:
+        if qq[0] != 0:
             walk_key(ke,*qq)
         pass
 
@@ -258,7 +257,7 @@ def main_f():
     #pr2 = Process(target=s_call, args=(qq2,), daemon=True)
     val = 3
     c, c2 = 0, 1
-    t = 0.45
+    t = 0.9952
 
     left = 3
     wid = 1277 - left
@@ -400,7 +399,7 @@ def main_f():
 
             if c2 % val == 0:
                 c2 -= val+1
-                qq_2 = ((clo[0], clo[1], t))
+                qq_2[0], qq_2[1], qq_2[2] = clo[0], clo[1], t
 
             #if c3 % val == 0:
             #    c3 -= val
