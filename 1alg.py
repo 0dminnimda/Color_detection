@@ -69,6 +69,7 @@ def k_prel(lit, key, ti):
     key.press(lit)
     time.sleep(ti)
     key.release(lit)
+    return lit
 
 def k_dou_prel(lit1, lit2, key, ti):
     key.press(lit1)
@@ -76,6 +77,7 @@ def k_dou_prel(lit1, lit2, key, ti):
     time.sleep(ti)
     key.release(lit1)
     key.release(lit2)
+    return lit1, lit2
 
 def walk_key(key, dirX, dirY):
 
@@ -83,37 +85,50 @@ def walk_key(key, dirX, dirY):
     n2 = n1 + n1*ma.sqrt(2)
     an = n2/3
 
-    t = 0.075
+    t = 0.1
+    val = None
 
     x, y = map_count(dirX, dirY, n2)
     y = -y
     dirX, dirY = ma.fabs(x), ma.fabs(y)
 
-    #if x > 0:
-    print(x, y)
-    #if n2-an <= x <= n2+an:
-    #    k_prel('в', key, t)
-    #elif -n2-an <= x <= -n2+an:
-    #    k_prel('ф', key, t)
+    #print(x, y)
+    if ma.fabs(x) > ma.fabs(y):
+        if x > 0:
+            if 25 > y > -25:
+                val = k_prel('в', key, t)
+            elif -25 > y > -n2-1:
+                val = k_dou_prel('ы', 'в', key, t)
+            elif 25 < y < n2+1:
+                val = k_dou_prel('в', 'ц', key, t)
+        if x < 0:
+            if 25 > y > -25:
+                val = k_prel('ф', key, t)
+            elif -25 > y > -n2-1:
+                val = k_dou_prel('ы', 'ф', key, t)
+            elif 25 < y < n2+1:
+                val = k_dou_prel('ф', 'ц', key, t)
 
-    #if n2-an <= y <= n2+an:
-    #    k_prel('ц', key, t)
-    #elif -n2-an <= y <= -n2+an:
-    #    k_prel('ы', key, t)
+    elif ma.fabs(x) < ma.fabs(y):
+        if y > 0:
+            if 25 > x > -25:
+                val = k_prel('ц', key, t)
+            elif -25 > x > -n2-1:
+                val = k_dou_prel('ф', 'ц', key, t)
+            elif 25 < x < n2+1:
+                val = k_dou_prel('ц', 'в', key, t)
+        if y < 0:
+            if 25 > x > -25:
+                val = k_prel('ы', key, t)
+            elif -25 > x > -n2-1:
+                val = k_dou_prel('ф', 'ы', key, t)
+            elif 25 < x < n2+1:
+                val = k_dou_prel('ы', 'в', key, t)
 
-    #    raise RuntimeError
+    else:
+        raise RuntimeError
 
-    #k_prel('ц', key, 0.5) # 2
-    #k_dou_prel('ц', 'ф', key, 0.5) # 23
-
-    #k_prel('ф', key, 0.5) # 3
-    #k_dou_prel('ф', 'ы', key, 0.5) # 34
-
-    #k_prel('ы', key, 0.5) # 4
-    #k_dou_prel('ы', 'в', key, 0.5) # 41
-
-    #k_prel('в', key, 0.5) # 1
-    #k_dou_prel('в', 'ц', key, 0.5) # 12
+    #print(x, y, val)
     pass
 
 def w_call(qq):
@@ -156,10 +171,10 @@ def closest(arr, X, Y, x0, y0):
     r = 2
     if arr == []:
         img = np.zeros((Y, X, 3), dtype = "uint8")
-        cv.line(img, (0, int(y0)), (X, int(y0)), (255, 0, 0), 1) # hor
-        cv.line(img, (int(x0), 0), (int(x0), Y), (255, 0, 0), 1) # ver
-        cv.line(img, (int( X/2 + X/(2*(1 + ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), 0), (int( X/2 - X/(2*(1+ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), Y), (255, 0, 0), 1)
-        cv.line(img, (int( X/2 - X/(2*(1 + ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), 0), (int( X/2 + X/(2*(1+ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), Y), (255, 0, 0), 1)
+        cv.line(img, (0, int(y0)), (X, int(y0)), (255, 0, 0), 2) # hor
+        cv.line(img, (int(x0), 0), (int(x0), Y), (255, 0, 0), 2) # ver
+        cv.line(img, (int( X/2 + X/(2*(1 + ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(0 - Y/2+y0)), (int( X/2 - X/(2*(1+ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(Y - Y/2+y0)), (255, 0, 0), 2)
+        cv.line(img, (int( X/2 - X/(2*(1 + ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(0 - Y/2+y0)), (int( X/2 + X/(2*(1+ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(Y - Y/2+y0)), (255, 0, 0), 2)
         cv.circle(img, (int(x0), int(y0)), 10, (0,0,255), 3)
         cv.putText(img, "0", (int(x0)-10, int(y0)+40), cv.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), 2)
         cv.imshow("img", img)
@@ -176,10 +191,10 @@ def closest(arr, X, Y, x0, y0):
             cv.putText(img, "%d" % new, (int(j[0])+10,int(j[1])-10), cv.FONT_HERSHEY_SIMPLEX, 1, (0,255,255), 2)
             if new < old:
                 m = j
-        cv.line(img, (0, int(y0)), (X, int(y0)), (255, 0, 0), 1) # hor
-        cv.line(img, (int(x0), 0), (int(x0), Y), (255, 0, 0), 1) # ver
-        cv.line(img, (int( X/2 + X/(2*(1 + ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), 0), (int( X/2 - X/(2*(1+ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), Y), (255, 0, 0), 1)
-        cv.line(img, (int( X/2 - X/(2*(1 + ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), 0), (int( X/2 + X/(2*(1+ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), Y), (255, 0, 0), 1)
+        cv.line(img, (0, int(y0)), (X, int(y0)), (255, 0, 0), 2) # hor
+        cv.line(img, (int(x0), 0), (int(x0), Y), (255, 0, 0), 2) # ver
+        cv.line(img, (int( X/2 + X/(2*(1 + ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(0 - Y/2+y0)), (int( X/2 - X/(2*(1+ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(Y - Y/2+y0)), (255, 0, 0), 2)
+        cv.line(img, (int( X/2 - X/(2*(1 + ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(0 - Y/2+y0)), (int( X/2 + X/(2*(1+ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(Y - Y/2+y0)), (255, 0, 0), 2)
         cv.line(img, (int(x0), int(y0)), (int(m[0]), int(m[1])), (0, 0, 255), 2)
         cv.circle(img, (int(m[0]), int(m[1])), 15, (0, 0, 255), -1)
         cv.circle(img, (int(x0), int(y0)), 10, (255, 0, 0), 3)
@@ -238,7 +253,7 @@ def main_f():
     pr_2 = Process(target=w_call, args=(qq_2,), daemon=True)
     #pr_3 = Process(target=w_call, args=(qq_3,), daemon=True)
     #pr2 = Process(target=s_call, args=(qq2,), daemon=True)
-    val = 2
+    val = 2 
     c, c2 = 0, val//2
 
     left = 3
