@@ -255,9 +255,9 @@ def main_f():
     pr_2 = Process(target=w_call, args=(qq_2,), daemon=True)
     #pr_3 = Process(target=w_call, args=(qq_3,), daemon=True)
     #pr2 = Process(target=s_call, args=(qq2,), daemon=True)
-    val = 3
+    val = 1
     c, c2 = 0, 1
-    t = 0.9952
+    t = 0.996 #0.9952
 
     left = 3
     wid = 1277 - left
@@ -393,13 +393,13 @@ def main_f():
         #c3 += 1
         if clo != False:
             if c % val == 0:
-                c -= val+1
+                c -= val
                 qq[0], qq[1], qq[2] = clo[0], clo[1], t
                 #qq_key = (clo[0], clo[1])
 
-            if c2 % val == 0:
-                c2 -= val+1
-                qq_2[0], qq_2[1], qq_2[2] = clo[0], clo[1], t
+            #if c2 % val == 0:
+            #    c2 -= val+1
+            #    qq_2[0], qq_2[1], qq_2[2] = clo[0], clo[1], t
 
             #if c3 % val == 0:
             #    c3 -= val
