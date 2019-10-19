@@ -69,12 +69,8 @@ def k_prel(lit, key, ti):
     key.press(lit)
     time.sleep(ti)
     key.release(lit)
-<<<<<<< Updated upstream
-    return lit
-=======
     #return lit
     pass
->>>>>>> Stashed changes
 
 def k_dou_prel(lit1, lit2, key, ti):
     key.press(lit1)
@@ -82,12 +78,8 @@ def k_dou_prel(lit1, lit2, key, ti):
     time.sleep(ti)
     key.release(lit1)
     key.release(lit2)
-<<<<<<< Updated upstream
-    return lit1, lit2
-=======
     #return lit1, lit2
     pass
->>>>>>> Stashed changes
 
 def walk_key(key, dirX, dirY, t):
 
@@ -95,50 +87,44 @@ def walk_key(key, dirX, dirY, t):
     n2 = n1 + n1*ma.sqrt(2)
     an = n2/3
 
-<<<<<<< Updated upstream
-    t = 0.1
-    val = None
-=======
     #t = 0.1
     #val = None
->>>>>>> Stashed changes
 
     x, y = map_count(dirX, dirY, n2)
     y = -y
     dirX, dirY = ma.fabs(x), ma.fabs(y)
 
-    #print(x, y)
     if ma.fabs(x) > ma.fabs(y):
         if x > 0:
             if 25 > y > -25:
-                val = k_prel('в', key, t)
+                k_prel('в', key, t)
             elif -25 > y > -n2-1:
-                val = k_dou_prel('ы', 'в', key, t)
+                k_dou_prel('ы', 'в', key, t)
             elif 25 < y < n2+1:
-                val = k_dou_prel('в', 'ц', key, t)
+                k_dou_prel('в', 'ц', key, t)
         if x < 0:
             if 25 > y > -25:
-                val = k_prel('ф', key, t)
+                k_prel('ф', key, t)
             elif -25 > y > -n2-1:
-                val = k_dou_prel('ы', 'ф', key, t)
+                k_dou_prel('ы', 'ф', key, t)
             elif 25 < y < n2+1:
-                val = k_dou_prel('ф', 'ц', key, t)
+                k_dou_prel('ф', 'ц', key, t)
 
     elif ma.fabs(x) < ma.fabs(y):
         if y > 0:
             if 25 > x > -25:
-                val = k_prel('ц', key, t)
+                k_prel('ц', key, t)
             elif -25 > x > -n2-1:
-                val = k_dou_prel('ф', 'ц', key, t)
+                k_dou_prel('ф', 'ц', key, t)
             elif 25 < x < n2+1:
-                val = k_dou_prel('ц', 'в', key, t)
+                k_dou_prel('ц', 'в', key, t)
         if y < 0:
             if 25 > x > -25:
-                val = k_prel('ы', key, t)
+                k_prel('ы', key, t)
             elif -25 > x > -n2-1:
-                val = k_dou_prel('ф', 'ы', key, t)
+                k_dou_prel('ф', 'ы', key, t)
             elif 25 < x < n2+1:
-                val = k_dou_prel('ы', 'в', key, t)
+                k_dou_prel('ы', 'в', key, t)
 
     else:
         raise RuntimeError
