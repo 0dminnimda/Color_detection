@@ -9,7 +9,7 @@ from pynput.keyboard import Key, Controller as k_c
 import math as ma
 from random import randint as ra
 import multiprocessing as mp
-from multiprocessing import Process
+from multiprocessing import Process, Value, Array
 
 def nothing(x):
     pass
@@ -69,7 +69,12 @@ def k_prel(lit, key, ti):
     key.press(lit)
     time.sleep(ti)
     key.release(lit)
+<<<<<<< Updated upstream
     return lit
+=======
+    #return lit
+    pass
+>>>>>>> Stashed changes
 
 def k_dou_prel(lit1, lit2, key, ti):
     key.press(lit1)
@@ -77,16 +82,26 @@ def k_dou_prel(lit1, lit2, key, ti):
     time.sleep(ti)
     key.release(lit1)
     key.release(lit2)
+<<<<<<< Updated upstream
     return lit1, lit2
+=======
+    #return lit1, lit2
+    pass
+>>>>>>> Stashed changes
 
-def walk_key(key, dirX, dirY):
+def walk_key(key, dirX, dirY, t):
 
     n1 = 25
     n2 = n1 + n1*ma.sqrt(2)
     an = n2/3
 
+<<<<<<< Updated upstream
     t = 0.1
     val = None
+=======
+    #t = 0.1
+    #val = None
+>>>>>>> Stashed changes
 
     x, y = map_count(dirX, dirY, n2)
     y = -y
@@ -128,14 +143,15 @@ def walk_key(key, dirX, dirY):
     else:
         raise RuntimeError
 
-    #print(x, y, val)
+    print(x, y)#, val)
     pass
 
 def w_call(qq):
     ke = k_c()
     while 1:
-        key = qq.get()
-        walk_key(ke,*key)
+        #key = qq#.get()
+        if qq != [0,0,0]:
+            walk_key(ke,*qq)
         pass
 
 def s_call(qq):
@@ -173,8 +189,8 @@ def closest(arr, X, Y, x0, y0):
         img = np.zeros((Y, X, 3), dtype = "uint8")
         cv.line(img, (0, int(y0)), (X, int(y0)), (255, 0, 0), 2) # hor
         cv.line(img, (int(x0), 0), (int(x0), Y), (255, 0, 0), 2) # ver
-        cv.line(img, (int( X/2 + X/(2*(1 + ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(0 - Y/2+y0)), (int( X/2 - X/(2*(1+ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(Y - Y/2+y0)), (255, 0, 0), 2)
-        cv.line(img, (int( X/2 - X/(2*(1 + ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(0 - Y/2+y0)), (int( X/2 + X/(2*(1+ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(Y - Y/2+y0)), (255, 0, 0), 2)
+        #cv.line(img, (int( X/2 + X/(2*(1 + ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(0 - Y/2+y0)), (int( X/2 - X/(2*(1+ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(Y - Y/2+y0)), (255, 0, 0), 2)
+        #cv.line(img, (int( X/2 - X/(2*(1 + ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(0 - Y/2+y0)), (int( X/2 + X/(2*(1+ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(Y - Y/2+y0)), (255, 0, 0), 2)
         cv.circle(img, (int(x0), int(y0)), 10, (0,0,255), 3)
         cv.putText(img, "0", (int(x0)-10, int(y0)+40), cv.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), 2)
         cv.imshow("img", img)
@@ -193,8 +209,8 @@ def closest(arr, X, Y, x0, y0):
                 m = j
         cv.line(img, (0, int(y0)), (X, int(y0)), (255, 0, 0), 2) # hor
         cv.line(img, (int(x0), 0), (int(x0), Y), (255, 0, 0), 2) # ver
-        cv.line(img, (int( X/2 + X/(2*(1 + ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(0 - Y/2+y0)), (int( X/2 - X/(2*(1+ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(Y - Y/2+y0)), (255, 0, 0), 2)
-        cv.line(img, (int( X/2 - X/(2*(1 + ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(0 - Y/2+y0)), (int( X/2 + X/(2*(1+ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(Y - Y/2+y0)), (255, 0, 0), 2)
+        #cv.line(img, (int( X/2 + X/(2*(1 + ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(0 - Y/2+y0)), (int( X/2 - X/(2*(1+ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(Y - Y/2+y0)), (255, 0, 0), 2)
+        #cv.line(img, (int( X/2 - X/(2*(1 + ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(0 - Y/2+y0)), (int( X/2 + X/(2*(1+ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(Y - Y/2+y0)), (255, 0, 0), 2)
         cv.line(img, (int(x0), int(y0)), (int(m[0]), int(m[1])), (0, 0, 255), 2)
         cv.circle(img, (int(m[0]), int(m[1])), 15, (0, 0, 255), -1)
         cv.circle(img, (int(x0), int(y0)), 10, (255, 0, 0), 3)
@@ -245,16 +261,18 @@ def main_f():
         imggg = cv.imread("Brawl Stars_Screenshot_2019.10.10_21.59.28.jpg")
         pass
 
-    qq = mp.Queue()
-    qq_2 = mp.Queue()
+    qq = Array('d', [0,0,0]) #mp.Queue()
+    #print(*qq, "\n\n\n")
+    qq_2 = Array('d', [0,0,0]) #mp.Queue()
     #qq_3 = mp.Queue()
     #qq2 = mp.Queue()
     pr = Process(target=w_call, args=(qq,), daemon=True)
     pr_2 = Process(target=w_call, args=(qq_2,), daemon=True)
     #pr_3 = Process(target=w_call, args=(qq_3,), daemon=True)
     #pr2 = Process(target=s_call, args=(qq2,), daemon=True)
-    val = 2 
-    c, c2 = 0, val//2
+    val = 3
+    c, c2 = 0, 1
+    t = 0.45
 
     left = 3
     wid = 1277 - left
@@ -390,13 +408,13 @@ def main_f():
         #c3 += 1
         if clo != False:
             if c % val == 0:
-                c -= val
-                qq.put((clo[0], clo[1]))
+                c -= val+1
+                qq[0], qq[1], qq[2] = clo[0], clo[1], t
                 #qq_key = (clo[0], clo[1])
 
-            #if c2 % val == 0:
-            #    c2 -= val
-            #    qq_2.put((clo[0], clo[1]))
+            if c2 % val == 0:
+                c2 -= val+1
+                qq_2 = ((clo[0], clo[1], t))
 
             #if c3 % val == 0:
             #    c3 -= val
