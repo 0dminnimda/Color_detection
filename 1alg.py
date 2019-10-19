@@ -89,75 +89,18 @@ def walk_key(key, dirX, dirY):
     y = -y
     dirX, dirY = ma.fabs(x), ma.fabs(y)
 
+    #if x > 0:
     print(x, y)
-    if n2-an <= x <= n2+an:
-        k_prel('в', key, t)
-    elif -n2-an <= x <= -n2+an:
-        k_prel('ф', key, t)
+    #if n2-an <= x <= n2+an:
+    #    k_prel('в', key, t)
+    #elif -n2-an <= x <= -n2+an:
+    #    k_prel('ф', key, t)
 
-    if n2-an <= y <= n2+an:
-        k_prel('ц', key, t)
-    elif -n2-an <= y <= -n2+an:
-        k_prel('ы', key, t)
+    #if n2-an <= y <= n2+an:
+    #    k_prel('ц', key, t)
+    #elif -n2-an <= y <= -n2+an:
+    #    k_prel('ы', key, t)
 
-    #if 0 <= dirX <= n1 and 0 <= dirY <= n1: # diag
-    #    if x > 0 and y > 0:
-    #        k_dou_prel('в', 'ц', key, t)
-    #        print("diag ++")
-    #    elif x < 0 and y > 0:
-    #        k_dou_prel('ц', 'ф', key, t)
-    #        print("diag -+")
-    #    elif x < 0 and y < 0:
-    #        k_dou_prel('ф', 'ы', key, t)
-    #        print("diag --")
-    #    elif x > 0 and y < 0:
-    #        k_dou_prel('ы', 'в', key, t)
-    #        print("diag +-")
-
-    #elif 0 <= dirX <= n1 and n1 < dirY <= n2: # up
-    #    if x > 0 and y > 0:
-    #        k_prel('ц', key, t)
-    #        print("up ++")
-    #    elif x < 0 and y > 0:
-    #        k_prel('ф', key, t)
-    #        print("up -+")
-    #    elif x < 0 and y < 0:
-    #        k_prel('ы', key, t)
-    #        print("up --")
-    #    elif x > 0 and y < 0:
-    #        k_prel('в', key, t)
-    #        print("up +-")
-
-    #elif n1 < dirX <= n2 and 0 <= dirY <= n1: # right
-    #    if x > 0 and y > 0:
-    #        k_prel('ф', key, t)
-    #        print("right ++")
-    #    elif x < 0 and y > 0:
-    #        k_prel('ц', key, t)
-    #        print("right -+")
-    #    elif x < 0 and y < 0:
-    #        k_prel('в', key, t)
-    #        print("right --")
-    #    elif x > 0 and y < 0:
-    #        k_prel('ы', key, t)
-    #        print("right +-")
-
-    #elif n1 < dirX <= n2 and n1 < dirY <= n2: # strange
-    #    if x > 0 and y > 0:
-    #        k_prel('ф', key, t)
-    #        print("strange ++")
-    #    elif x < 0 and y > 0:
-    #        k_prel('ц', key, t)
-    #        print("strange -+")
-    #    elif x < 0 and y < 0:
-    #        k_prel('в', key, t)
-    #        print("strange --")
-    #    elif x > 0 and y < 0:
-    #        k_prel('ы', key, t)
-    #        print("strange +-")
-
-    #else:
-    #    print(dirX, dirY, x, y, n1, n2)
     #    raise RuntimeError
 
     #k_prel('ц', key, 0.5) # 2
@@ -210,10 +153,14 @@ def end(mou, an, bn):
     mou.click(Button.left, 1)
 
 def closest(arr, X, Y, x0, y0):
+    r = 2
     if arr == []:
         img = np.zeros((Y, X, 3), dtype = "uint8")
+        cv.line(img, (0, int(y0)), (X, int(y0)), (255, 0, 0), 1) # hor
+        cv.line(img, (int(x0), 0), (int(x0), Y), (255, 0, 0), 1) # ver
+        cv.line(img, (int( X/2 + X/(2*(1 + ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), 0), (int( X/2 - X/(2*(1+ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), Y), (255, 0, 0), 1)
+        cv.line(img, (int( X/2 - X/(2*(1 + ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), 0), (int( X/2 + X/(2*(1+ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), Y), (255, 0, 0), 1)
         cv.circle(img, (int(x0), int(y0)), 10, (0,0,255), 3)
-        cv.putText(img, "\" I \"", (int(x0)-35, int(y0)-30), cv.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), 2)
         cv.putText(img, "0", (int(x0)-10, int(y0)+40), cv.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), 2)
         cv.imshow("img", img)
         return False, False
@@ -229,9 +176,13 @@ def closest(arr, X, Y, x0, y0):
             cv.putText(img, "%d" % new, (int(j[0])+10,int(j[1])-10), cv.FONT_HERSHEY_SIMPLEX, 1, (0,255,255), 2)
             if new < old:
                 m = j
-        cv.circle(img, (int(m[0]), int(m[1])), 15, (0,0,255), -1)
-        cv.circle(img, (int(x0), int(y0)), 10, (0,0,255), 3)
-        cv.putText(img, "\" I \"", (int(x0)-35, int(y0)-30), cv.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), 2)
+        cv.line(img, (0, int(y0)), (X, int(y0)), (255, 0, 0), 1) # hor
+        cv.line(img, (int(x0), 0), (int(x0), Y), (255, 0, 0), 1) # ver
+        cv.line(img, (int( X/2 + X/(2*(1 + ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), 0), (int( X/2 - X/(2*(1+ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), Y), (255, 0, 0), 1)
+        cv.line(img, (int( X/2 - X/(2*(1 + ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), 0), (int( X/2 + X/(2*(1+ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), Y), (255, 0, 0), 1)
+        cv.line(img, (int(x0), int(y0)), (int(m[0]), int(m[1])), (0, 0, 255), 2)
+        cv.circle(img, (int(m[0]), int(m[1])), 15, (0, 0, 255), -1)
+        cv.circle(img, (int(x0), int(y0)), 10, (255, 0, 0), 3)
         cv.putText(img, "%d" % c, (int(x0)-10, int(y0)+40), cv.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), 2)
         cv.imshow("img", img)
         m[0], m[1] = m[0]-x0, m[1]-y0
