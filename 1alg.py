@@ -224,7 +224,7 @@ def main_f():
         name5 = [i+"5" for i in name1]
         #name6 = [i+"6" for i in name1]
         #ctb(name6, [255, 255, 255, 255, 255, 255])
-        ctb(name5, [255, 255, 255, 255, 255, 255])
+        ctb(name5, [87, 133, 0, 90, 255, 255])
         ctb(name4, [28, 67, 64, 44, 255, 255])
         ctb(name3, [0, 255, 111, 0, 255, 255])
         ctb(name2, [0, 0, 0, 0, 0, 255])
@@ -329,7 +329,7 @@ def main_f():
         #contour2, _ = cv.findContours( mask2.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE) # walls whihe
         #contour3, _ = cv.findContours( mask.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE) # forest blue
         contour4, _ = cv.findContours( mask4.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE) # "me" yellow
-        contour5, _ = cv.findContours( mask5.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE) # boosters
+        contour5, _ = cv.findContours( mask5.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE) # boosters azure
 
         x0, y0 = wid/2, hei/2
         arr = []
