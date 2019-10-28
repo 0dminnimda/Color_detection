@@ -9,11 +9,7 @@ from pynput.keyboard import Key, Controller as k_c
 import math as ma
 from random import randint as ra
 import multiprocessing as mp
-from multiprocessing import Process
-
-def nothing(x):
-    pass
-    pass
+from multiprocessing import Process, Value, Array
 
 def map_count(ab1, ac1, n, nn = False):
     if nn == True:
@@ -70,6 +66,7 @@ def k_prel(lit, key, ti):
     time.sleep(ti)
     key.release(lit)
     #return lit
+    pass
 
 def k_dou_prel(lit1, lit2, key, ti):
     key.press(lit1)
@@ -78,14 +75,15 @@ def k_dou_prel(lit1, lit2, key, ti):
     key.release(lit1)
     key.release(lit2)
     #return lit1, lit2
+    pass
 
-def walk_key(key, dirX, dirY):
+def walk_key(key, dirX, dirY, t):
 
     n1 = 25
     n2 = n1 + n1*ma.sqrt(2)
     an = n2/3
 
-    t = 0.1
+    #t = 0.1
     #val = None
 
     x, y = map_count(dirX, dirY, n2)
@@ -127,14 +125,14 @@ def walk_key(key, dirX, dirY):
     else:
         raise RuntimeError
 
-    #print(x, y, val)
+    #print(x, y)#, val)
     pass
 
 def w_call(qq):
     ke = k_c()
     while 1:
-        key = qq.get()
-        walk_key(ke,*key)
+        if qq[0] != 0:
+            pass#walk_key(ke,*qq)
         pass
 
 def s_call(qq):
@@ -155,13 +153,10 @@ def start(mou, an, bn):
 
 def end(mou, an, bn):
     time.sleep(2.5)
-    # скиншот
-    #mou.position = (1225, 795)
-    #mou.click(Button.left, 1)
-
     # выход из игры
     mou.position = (an-360, bn+10)
     mou.click(Button.left, 1)
+
     # сворачивание окна
     mou.position = (an+130, bn-680)
     mou.click(Button.left, 1)
@@ -172,8 +167,8 @@ def closest(arr, X, Y, x0, y0):
         img = np.zeros((Y, X, 3), dtype = "uint8")
         cv.line(img, (0, int(y0)), (X, int(y0)), (255, 0, 0), 2) # hor
         cv.line(img, (int(x0), 0), (int(x0), Y), (255, 0, 0), 2) # ver
-        cv.line(img, (int( X/2 + X/(2*(1 + ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(0 - Y/2+y0)), (int( X/2 - X/(2*(1+ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(Y - Y/2+y0)), (255, 0, 0), 2)
-        cv.line(img, (int( X/2 - X/(2*(1 + ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(0 - Y/2+y0)), (int( X/2 + X/(2*(1+ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(Y - Y/2+y0)), (255, 0, 0), 2)
+        #cv.line(img, (int( X/2 + X/(2*(1 + ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(0 - Y/2+y0)), (int( X/2 - X/(2*(1+ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(Y - Y/2+y0)), (255, 0, 0), 2)
+        #cv.line(img, (int( X/2 - X/(2*(1 + ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(0 - Y/2+y0)), (int( X/2 + X/(2*(1+ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(Y - Y/2+y0)), (255, 0, 0), 2)
         cv.circle(img, (int(x0), int(y0)), 10, (0,0,255), 3)
         cv.putText(img, "0", (int(x0)-10, int(y0)+40), cv.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), 2)
         cv.imshow("img", img)
@@ -192,8 +187,8 @@ def closest(arr, X, Y, x0, y0):
                 m = j
         cv.line(img, (0, int(y0)), (X, int(y0)), (255, 0, 0), 2) # hor
         cv.line(img, (int(x0), 0), (int(x0), Y), (255, 0, 0), 2) # ver
-        cv.line(img, (int( X/2 + X/(2*(1 + ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(0 - Y/2+y0)), (int( X/2 - X/(2*(1+ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(Y - Y/2+y0)), (255, 0, 0), 2)
-        cv.line(img, (int( X/2 - X/(2*(1 + ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(0 - Y/2+y0)), (int( X/2 + X/(2*(1+ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(Y - Y/2+y0)), (255, 0, 0), 2)
+        #cv.line(img, (int( X/2 + X/(2*(1 + ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(0 - Y/2+y0)), (int( X/2 - X/(2*(1+ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(Y - Y/2+y0)), (255, 0, 0), 2)
+        #cv.line(img, (int( X/2 - X/(2*(1 + ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(0 - Y/2+y0)), (int( X/2 + X/(2*(1+ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(Y - Y/2+y0)), (255, 0, 0), 2)
         cv.line(img, (int(x0), int(y0)), (int(m[0]), int(m[1])), (0, 0, 255), 2)
         cv.circle(img, (int(m[0]), int(m[1])), 15, (0, 0, 255), -1)
         cv.circle(img, (int(x0), int(y0)), 10, (255, 0, 0), 3)
@@ -212,25 +207,28 @@ def stbp(name):
     for i,j in name.items():
         cv.setTrackbarPos(i,"Tracking",int(j))
 
-def ctb(name):
-    for i in name:
-        cv.createTrackbar(i[0], "Tracking", i[1], i[2], nothing)
+def ctb(name, val, max = 255):
+    for i in range(len(name)):
+        cv.createTrackbar(name[i], "Tracking", val[i], max, nothing)
+
+def nothing(x):
+    pass
 
 def main_f():
     for _ in range(1):
         cv.namedWindow("Tracking", cv.WINDOW_NORMAL)
-        cr_tb = [["LH", 110, 255], ["LS", 100, 255], ["LV", 120, 255], ["UH", 130, 255], ["US", 255, 255], ["UV", 255, 255]]
-        cr_tb2 = [["LH2", 0, 255], ["LS2", 0, 255], ["LV2", 0, 255], ["UH2", 0, 255], ["US2", 0, 255], ["UV2", 255, 255]]
-        cr_tb3 = [["LH3", 0, 255], ["LS3", 255, 255], ["LV3", 111, 255], ["UH3", 0, 255], ["US3", 255, 255], ["UV3", 255, 255]]
-        cr_tb4 = [["LH4", 30, 255], ["LS4", 158, 255], ["LV4", 67, 255], ["UH4", 62, 255], ["US4", 200, 255], ["UV4", 255, 255]]
-        ctb(cr_tb4)
-        ctb(cr_tb3)
-        ctb(cr_tb2)
-        ctb(cr_tb)
-        name = ["LH","LS","LV","UH","US","UV"]
-        name2 = [i+"2" for i in name]
-        name3 = [i+"3" for i in name]
-        name4 = [i+"4" for i in name]
+        name1 = ["LH","LS","LV","UH","US","UV"]
+        name2 = [i+"2" for i in name1]
+        name3 = [i+"3" for i in name1]
+        name4 = [i+"4" for i in name1]
+        name5 = [i+"5" for i in name1]
+        #name6 = [i+"6" for i in name1]
+        #ctb(name6, [255, 255, 255, 255, 255, 255])
+        ctb(name5, [255, 255, 255, 255, 255, 255])
+        ctb(name4, [28, 67, 64, 44, 255, 255])
+        ctb(name3, [0, 255, 111, 0, 255, 255])
+        ctb(name2, [0, 0, 0, 0, 0, 255])
+        ctb(name1, [110, 100, 120, 130, 255, 255])
 
         cap = cv.VideoCapture('2019-10-06 02-16-00.mp4')
         cap2 = cv.VideoCapture('2019-10-06 02-17-30.mp4')
@@ -244,16 +242,18 @@ def main_f():
         imggg = cv.imread("Brawl Stars_Screenshot_2019.10.10_21.59.28.jpg")
         pass
 
-    qq = mp.Queue()
-    qq_2 = mp.Queue()
+    qq = Array('d', [0,0,0]) #mp.Queue()
+    #print(*qq, "\n\n\n")
+    qq_2 = Array('d', [0,0,0]) #mp.Queue()
     #qq_3 = mp.Queue()
     #qq2 = mp.Queue()
     pr = Process(target=w_call, args=(qq,), daemon=True)
     pr_2 = Process(target=w_call, args=(qq_2,), daemon=True)
     #pr_3 = Process(target=w_call, args=(qq_3,), daemon=True)
     #pr2 = Process(target=s_call, args=(qq2,), daemon=True)
-    val = 2 
-    c, c2 = 0, val//2
+    val = 1
+    c, c2 = 0, 1
+    t = 0.996 #0.9952
 
     left = 3
     wid = 1277 - left
@@ -292,7 +292,7 @@ def main_f():
         #gray = cv.cvtColor(bet, cv.COLOR_BGR2GRAY)
 
         for _ in range(1):
-            n = gtbp(name)
+            n = gtbp(name1)
             l_b, u_b = np.array([n[0], n[1], n[2]]), np.array([n[3], n[4], n[5]])
             n = gtbp(name2)
             l_b2, u_b2 = np.array([n[0], n[1], n[2]]), np.array([n[3], n[4], n[5]])
@@ -300,6 +300,8 @@ def main_f():
             l_b3, u_b3 = np.array([n[0], n[1], n[2]]), np.array([n[3], n[4], n[5]])
             n = gtbp(name4)
             l_b4, u_b4 = np.array([n[0], n[1], n[2]]), np.array([n[3], n[4], n[5]])
+            n = gtbp(name5)
+            l_b5, u_b5 = np.array([n[0], n[1], n[2]]), np.array([n[3], n[4], n[5]])
 
             mask = cv.inRange(hsv, l_b, u_b) # charapters
             #res = cv.bitwise_and(frame, frame, mask=mask)
@@ -307,49 +309,31 @@ def main_f():
             #res2 = cv.bitwise_and(frame, frame, mask=mask2)
             mask3 = cv.inRange(hsv, l_b3, u_b3) # boxes
             #res3 = cv.bitwise_and(frame, frame, mask=mask3)
-            mask4 = cv.inRange(hsv, l_b4, u_b4) # my circle
-            res4 = cv.bitwise_and(frame, frame, mask=mask4)
+            mask4 = cv.inRange(hsv, l_b4, u_b4) # friends
+            #res4 = cv.bitwise_and(frame, frame, mask=mask4)
+            mask5 = cv.inRange(hsv, l_b5, u_b5)
+            res5 = cv.bitwise_and(frame, frame, mask=mask5)
+
             bet_mask = cv.bitwise_or(mask2, mask)
             bet_mask2 = cv.bitwise_or(bet_mask, mask3)
             bet_mask3 = cv.bitwise_or(bet_mask2, mask4)
-            bet = cv.bitwise_or(frame, frame, mask=bet_mask3)
-            pass
+            bet_mask4 = cv.bitwise_or(bet_mask3, mask5)
+            bet = cv.bitwise_or(frame, frame, mask=bet_mask4)
 
         #points_n = np.zeros(frame.shape[:2], dtype = "uint8")
-
         #cv2.approxPolyDP()
         #RETR_CCOMP или RETR_FLOODFILL
         #bet_cont = cv.bitwise_or(bet, bet, mask=mask3)
 
-        contour, _ = cv.findContours( mask3.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE) # boxes
-        contour2, _ = cv.findContours( mask.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE) # charapters
-        contour3, _ = cv.findContours( mask4.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE) # "me"
+        contour, _ = cv.findContours( mask3.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE) # boxes and enemys red
+        #contour2, _ = cv.findContours( mask2.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE) # walls whihe
+        #contour3, _ = cv.findContours( mask.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE) # forest blue
+        contour4, _ = cv.findContours( mask4.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE) # "me" yellow
+        contour5, _ = cv.findContours( mask5.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE) # boosters
 
-        arrx, arry = [], []
-        for i in contour3:
-            moments = cv.moments(i, 1)
-            dM01 = moments['m01']
-            dM10 = moments['m10']
-            dArea = moments['m00']
-
-            if dArea > 100:
-                x = dM10 / dArea
-                y = dM01 / dArea
-                #cv.circle(bet, (int(x), int(y)), 10, (0,255,255), -1)
-                arrx.append(x)
-                arry.append(y)
-
-        if arrx != []:
-            mea = (np.mean(arrx), np.mean(arry))
-            cv.circle(bet, (int(mea[0]), int(mea[1])), 10, (0,255,255), -1)
-            #print((mea[0], mea[1]),(mea[0]+50, mea[1]-50))
-            #cv.rectangle(bet, (int(mea[0]-37.5), int(mea[1])), (int(mea[0]+37.5), int(mea[1])-60), (0,255,255))
-            pass
-        else:
-           mea = []
-    
         x0, y0 = wid/2, hei/2
-        for i in contour2:
+        arr = []
+        for i in contour4:
             moments = cv.moments(i, 1)
             dM01 = moments['m01']
             dM10 = moments['m10']
@@ -358,15 +342,27 @@ def main_f():
             if dArea > 300:
                 x = dM10 / dArea
                 y = dM01 / dArea
-                cv.circle(bet, (int(x), int(y)), 10, (0,255,0), -1)
-                #cv.circle(n_mask, (x-5, y+25), 60, (255,255,255), -1)
-                #cv.imshow("bet", points)
+                x0, y0 = x, y
+                cv.circle(bet, (int(x), int(y)), 20, (0,255,0), -1)
 
-                if mea != [] and mea[0]-35 < x < mea[0]+35 and mea[1]-60 < y < mea[1]+15:
-                    x0, y0 = x, y
-                    cv.circle(bet, (int(x), int(y)), 20, (0,255,0), -1)
+        #for i in contour2: ....
+        #        cv.circle(bet, (int(x), int(y)), 10, (0,255,0), -1)
+        #        #cv.circle(n_mask, (x-5, y+25), 60, (255,255,255), -1)
+        #        #cv.imshow("bet", points)
+        #        pass arrx, arry = [], []
 
-        arr = []
+        for i in contour5:
+            moments = cv.moments(i, 1)
+            dM01 = moments['m01']
+            dM10 = moments['m10']
+            dArea = moments['m00']
+
+            if dArea > 200:
+                x = dM10 / dArea
+                y = dM01 / dArea
+                cv.circle(bet, (int(x), int(y)), 5, (0,0,0), -1)
+                #arr.append([x,y])
+
         for i in contour:
             moments = cv.moments(i, 1)
             dM01 = moments['m01']
@@ -390,24 +386,11 @@ def main_f():
         if clo != False:
             if c % val == 0:
                 c -= val
-                qq.put((clo[0], clo[1]))
-                #qq_key = (clo[0], clo[1])
+                qq[0], qq[1], qq[2] = clo[0], clo[1], t
 
             #if c2 % val == 0:
-            #    c2 -= val
-            #    qq_2.put((clo[0], clo[1]))
-
-            #if c3 % val == 0:
-            #    c3 -= val
-            #    qq_3.put((clo[0], clo[1]))
-                #qq.put((mou, clo[0], clo[1], rang, step))
-                #qq_key = (mou, clo[0], clo[1], rang, step)
-                #qq2.put((mou, clo[0], clo[1], rang))
-                #qq_key2 = (mou, clo[0], clo[1], rang)
-            #else:
-                #pass
-                #qq.put(qq_key)
-                #qq2.put(qq_key2)
+            #    c2 -= val+1
+            #    qq_2[0], qq_2[1], qq_2[2] = clo[0], clo[1], t
 
         #cv.namedWindow("орлоры", cv.WINDOW_NORMAL)
         #cv.imshow("frame", frame)
@@ -416,6 +399,7 @@ def main_f():
         #cv.imshow("res2", res2)
         #cv.imshow("res3", res3)
         #cv.imshow("res4", res4)
+        cv.imshow("res5", res5)
         cv.imshow("bet", bet)
 
         #if cv.waitKey(3) & 0xFF == ord('4'):
