@@ -273,8 +273,8 @@ def gtbp(name):
 
 
 def stbp(name):
-    for i,j in name.items():
-        cv.setTrackbarPos(i,"Tracking",int(j))
+    for i, j in name.items():
+        cv.setTrackbarPos(i, "Tracking", int(j))
 
 
 def ctb(name, val, max=255):
@@ -285,16 +285,17 @@ def ctb(name, val, max=255):
 def nothing(x):
     pass
 
+
 def main_f():
     for _ in range(1):
         cv.namedWindow("Tracking", cv.WINDOW_NORMAL)
-        name1 = ["LH","LS","LV","UH","US","UV"]
+        name1 = ["LH", "LS", "LV", "UH", "US", "UV"]
         name2 = [i+"2" for i in name1]
         name3 = [i+"3" for i in name1]
         name4 = [i+"4" for i in name1]
         name5 = [i+"5" for i in name1]
-        #name6 = [i+"6" for i in name1]
-        #ctb(name6, [255, 255, 255, 255, 255, 255])
+        # name6 = [i+"6" for i in name1]
+        # ctb(name6, [255, 255, 255, 255, 255, 255])
         ctb(name5, [90, 100, 155, 95, 255, 255])
         ctb(name4, [28, 67, 64, 44, 255, 255])
         ctb(name3, [0, 255, 111, 0, 255, 255])
@@ -303,12 +304,13 @@ def main_f():
 
         cap = cv.VideoCapture('2019-10-06 02-16-00.mp4')
         cap2 = cv.VideoCapture('2019-10-06 02-17-30.mp4')
-        cap_new = cv.VideoCapture('2019-10-07 12-58-00.mp4')#2019-10-07 12-45-36.mp4')#2019-10-07 12-06-37.mp4')
+        cap_new = cv.VideoCapture('2019-10-07 12-58-00.mp4')
+        # 2019-10-07 12-45-36.mp4')#2019-10-07 12-06-37.mp4')
         cap_new.set(cv.CAP_PROP_FPS, 5)
-        #hei = cap_new.get(cv.CAP_PROP_FRAME_HEIGHT)
-        #wid = cap_new.get(cv.CAP_PROP_FRAME_WIDTH)
-        #cap_new.set(cv.CAP_PROP_FRAME_WIDTH , 1024)
-        #cap_new.set(cv.CAP_PROP_FRAME_HEIGHT , 720)
+        # hei = cap_new.get(cv.CAP_PROP_FRAME_HEIGHT)
+        # wid = cap_new.get(cv.CAP_PROP_FRAME_WIDTH)
+        # cap_new.set(cv.CAP_PROP_FRAME_WIDTH , 1024)
+        # cap_new.set(cv.CAP_PROP_FRAME_HEIGHT , 720)
 
         n = gtbp(name1)
         l_b, u_b = np.array([n[0], n[1], n[2]]), np.array([n[3], n[4], n[5]])
@@ -321,7 +323,7 @@ def main_f():
         n = gtbp(name5)
         l_b5, u_b5 = np.array([n[0], n[1], n[2]]), np.array([n[3], n[4], n[5]])
 
-        #imggg = cv.imread("Brawl Stars_Screenshot_2019.10.10_21.59.28.jpg")
+        # imggg = cv.imread("Brawl Stars_Screenshot_2019.10.10_21.59.28.jpg")
         pass
 
     qq = Array('d', [0,0,0])
