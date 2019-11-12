@@ -117,6 +117,7 @@ def order_points(pts):
     # thanks for creating this original of this function:
     # https://www.pyimagesearch.com/2014/08/25/4-
     # point-opencv-getperspective-transform-example/
+    pts = np.array(pts)
     rect = np.zeros((4, 2), dtype="float32")
 
     s = pts.sum(axis=1)
@@ -148,8 +149,8 @@ def persp_form(image, pts):
             [maxWidth - 1, maxHeight - 1], [0, maxHeight - 1]]
     dst = np.array(dst1, dtype="float32")
 
-    M = cv2.getPerspectiveTransform(rect, dst)
-    warped = cv2.warpPerspective(image, M, (maxWidth, maxHeight))
+    M = cv.getPerspectiveTransform(rect, dst)
+    warped = cv.warpPerspective(image, M, (maxWidth, maxHeight))
 
     return warped
 
