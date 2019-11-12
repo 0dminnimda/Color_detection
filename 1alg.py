@@ -39,7 +39,6 @@ def map_count(ab1, ac1, n, nn=False):
 
     return ab, ac
 
-
 def shoot(mou, dirX, dirY, rangee):
     mou.position = (1200, 650)
     t = 0.1**1.125
@@ -52,7 +51,6 @@ def shoot(mou, dirX, dirY, rangee):
     mou.release(Button.left)
     pass
 
-
 def walk(mou, dirX, dirY, rangee, tim):
     mou.position = (150, 660)
     t = 0.1**1.125
@@ -63,7 +61,6 @@ def walk(mou, dirX, dirY, rangee, tim):
     mou.move(dirX, dirY)
     time.sleep(tim-t/2)
     mou.release(Button.left)
-
 
 def closest(arr, X, Y, x0, y0):
     r = 2
@@ -116,9 +113,8 @@ def closest(arr, X, Y, x0, y0):
         m[0], m[1] = m[0]-x0, m[1]-y0
         return m, old
 
-
 def order_points(pts):
-    # thanks for creating this function:
+    # thanks for creating this original of this function:
     # https://www.pyimagesearch.com/2014/08/25/4-
     # point-opencv-getperspective-transform-example/
     rect = np.zeros((4, 2), dtype="float32")
@@ -133,9 +129,8 @@ def order_points(pts):
 
     return rect
 
-
 def persp_form(image, pts):
-    # thanks for creating this function:
+    # thanks for creating this original of this function:
     # https://www.pyimagesearch.com/2014/08/25/4-
     # point-opencv-getperspective-transform-example/
     rect = order_points(pts)
@@ -158,14 +153,12 @@ def persp_form(image, pts):
 
     return warped
 
-
 def k_prel(lit, key, ti):
     key.press(lit)
     time.sleep(ti)
     key.release(lit)
     # return lit
     pass
-
 
 def k_dou_prel(lit1, lit2, key, ti):
     key.press(lit1)
@@ -175,7 +168,6 @@ def k_dou_prel(lit1, lit2, key, ti):
     key.release(lit2)
     # return lit1, lit2
     pass
-
 
 def walk_key(key, dirX, dirY, t):
 
@@ -227,7 +219,6 @@ def walk_key(key, dirX, dirY, t):
     # print(x, y)#, val)
     pass
 
-
 def w_call(qq):
     ke = k_c()
     while 1:
@@ -235,13 +226,11 @@ def w_call(qq):
             walk_key(ke, *qq)
         pass
 
-
 def s_call(qq):
     while 1:
         key = qq.get()
         shoot(*key)
         pass
-
 
 def start(mou, an, bn):
     # разворачивание окна
@@ -253,7 +242,6 @@ def start(mou, an, bn):
     mou.position = (an, bn)
     mou.click(Button.left, 1)
 
-
 def end(mou, an, bn):
     time.sleep(2.5)
     # выход из игры
@@ -264,27 +252,23 @@ def end(mou, an, bn):
     mou.position = (an+130, bn-680)
     mou.click(Button.left, 1)
 
-
 def gtbp(name):
     out_name = []
     for i in name:
         out_name.append(cv.getTrackbarPos(i, "Tracking"))
     return out_name
 
-
 def stbp(name):
     for i, j in name.items():
         cv.setTrackbarPos(i, "Tracking", int(j))
-
 
 def ctb(name, val, max=255):
     for i in range(len(name)):
         cv.createTrackbar(name[i], "Tracking", val[i], max, nothing)
 
-
 def nothing(x):
     pass
-
+    pass
 
 def main_f():
     for _ in range(1):
