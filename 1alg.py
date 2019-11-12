@@ -11,8 +11,9 @@ from random import randint as ra
 import multiprocessing as mp
 from multiprocessing import Process, Value, Array
 
-def map_count(ab1, ac1, n, nn = False):
-    if nn == True:
+
+def map_count(ab1, ac1, n, nn=False):
+    if nn is True:
         ab1, ac1 = (-1274+ab1), (-717+ac1)
     abb = ab1
     acc = ac1
@@ -21,7 +22,7 @@ def map_count(ab1, ac1, n, nn = False):
         ac1 /= 2
     ab1 = ma.fabs(ab1)
     ac1 = ma.fabs(ac1)
-    
+
     if ab1 > ac1:
         ac = (n*ac1)/ab1
         ab = n
@@ -38,17 +39,19 @@ def map_count(ab1, ac1, n, nn = False):
 
     return ab, ac
 
+
 def shoot(mou, dirX, dirY, rangee):
     mou.position = (1200, 650)
     t = 0.1**1.125
     dirX, dirY = map_count(dirX, dirY, rangee)
     mou.press(Button.left)
     time.sleep(t/1.25)
-    #mou.position = (1200+dirX, 650+dirY)
+    # mou.position = (1200+dirX, 650+dirY)
     mou.move(dirX, dirY)
     time.sleep(t/1.25)
     mou.release(Button.left)
     pass
+
 
 def walk(mou, dirX, dirY, rangee, tim):
     mou.position = (150, 660)
@@ -56,46 +59,63 @@ def walk(mou, dirX, dirY, rangee, tim):
     dirX, dirY = map_count(dirX, dirY, rangee)
     mou.press(Button.left)
     time.sleep(t/2)
-    #mou.position = (1200+dirX, 650+dirY)
+    # mou.position = (1200+dirX, 650+dirY)
     mou.move(dirX, dirY)
     time.sleep(tim-t/2)
     mou.release(Button.left)
 
+
 def closest(arr, X, Y, x0, y0):
     r = 2
     if arr == []:
-        img = np.zeros((Y, X, 3), dtype = "uint8")
-        cv.line(img, (0, int(y0)), (X, int(y0)), (255, 0, 0), 2) # hor
-        cv.line(img, (int(x0), 0), (int(x0), Y), (255, 0, 0), 2) # ver
-        #cv.line(img, (int( X/2 + X/(2*(1 + ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(0 - Y/2+y0)), (int( X/2 - X/(2*(1+ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(Y - Y/2+y0)), (255, 0, 0), 2)
-        #cv.line(img, (int( X/2 - X/(2*(1 + ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(0 - Y/2+y0)), (int( X/2 + X/(2*(1+ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(Y - Y/2+y0)), (255, 0, 0), 2)
-        cv.circle(img, (int(x0), int(y0)), 10, (0,0,255), 3)
-        cv.putText(img, "0", (int(x0)-10, int(y0)+40), cv.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), 2)
+        img = np.zeros((Y, X, 3), dtype="uint8")
+        cv.line(img, (0, int(y0)), (X, int(y0)), (255, 0, 0), 2)  # hor
+        cv.line(img, (int(x0), 0), (int(x0), Y), (255, 0, 0), 2)  # ver
+        # cv.line(img, (int(X/2+X/(2*(1+ma.sqrt(2)))*ma.sqrt(r)-X/2+x0)
+        # , int(0-Y/2+y0)), (int(X/2-X/(2*(1+ma.sqrt(2)))*ma.sqrt(r)-
+        # X/2+x0), int(Y-Y/2+y0)), (255, 0, 0), 2)
+        # cv.line(img, (int(X/2-X/(2*(1+ma.sqrt(2)))*ma.sqrt(r)-X/2+x0)
+        # , int(0-Y/2+y0)), (int(X/2+X/(2*(1+ma.sqrt(2)))*ma.sqrt(r)-
+        # X/2+x0), int(Y-Y/2+y0)), (255, 0, 0), 2)
+        cv.circle(img, (int(x0), int(y0)), 10, (0, 0, 255), 3)
+        cv.putText(
+            img, "0", (int(x0)-10, int(y0)+40),
+            cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
         cv.imshow("img", img)
         return False, False
     else:
-        img = np.zeros((Y, X, 3), dtype = "uint8")
+        img = np.zeros((Y, X, 3), dtype="uint8")
         m = arr[0]
         c = 0
         for j in arr:
             c += 1
             new = ma.sqrt(ma.fabs(j[0]-x0)**2 + ma.fabs(j[1]-y0)**2)
             old = ma.sqrt(ma.fabs(m[0]-x0)**2 + ma.fabs(m[1]-y0)**2)
-            cv.circle(img, (int(j[0]), int(j[1])), 15, (255,0,0), 2)
-            cv.putText(img, "%d" % new, (int(j[0])+10,int(j[1])-10), cv.FONT_HERSHEY_SIMPLEX, 1, (0,255,255), 2)
+            cv.circle(img, (int(j[0]), int(j[1])), 15, (255, 0, 0), 2)
+            cv.putText(
+                img, "%d" % new, (int(j[0])+10, int(j[1])-10),
+                cv.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 2)
             if new < old:
                 m = j
-        cv.line(img, (0, int(y0)), (X, int(y0)), (255, 0, 0), 2) # hor
-        cv.line(img, (int(x0), 0), (int(x0), Y), (255, 0, 0), 2) # ver
-        #cv.line(img, (int( X/2 + X/(2*(1 + ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(0 - Y/2+y0)), (int( X/2 - X/(2*(1+ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(Y - Y/2+y0)), (255, 0, 0), 2)
-        #cv.line(img, (int( X/2 - X/(2*(1 + ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(0 - Y/2+y0)), (int( X/2 + X/(2*(1+ma.sqrt(2)))*ma.sqrt(r) - X/2+x0 ), int(Y - Y/2+y0)), (255, 0, 0), 2)
-        cv.line(img, (int(x0), int(y0)), (int(m[0]), int(m[1])), (0, 0, 255), 2)
+        cv.line(img, (0, int(y0)), (X, int(y0)), (255, 0, 0), 2)  # hor
+        cv.line(img, (int(x0), 0), (int(x0), Y), (255, 0, 0), 2)  # ver
+        # cv.line(img, (int(X/2+X/(2*(1+ma.sqrt(2)))*ma.sqrt(r)-X/2+x0),
+        # int(0-Y/2+y0)), (int(X/2-X/(2*(1+ma.sqrt(2)))*ma.sqrt(r)-X/2+x0),
+        # int(Y-Y/2+y0)), (255, 0, 0), 2)
+        # cv.line(img, (int(X/2-X/(2*(1+ma.sqrt(2)))*ma.sqrt(r)-X/2+x0),
+        # int(0-Y/2+y0)), (int(X/2+X/(2*(1+ma.sqrt(2)))*ma.sqrt(r)-X/2+x0),
+        # int(Y-Y/2+y0)), (255, 0, 0), 2)
+        cv.line(img, (int(x0), int(y0)),
+                (int(m[0]), int(m[1])), (0, 0, 255), 2)
         cv.circle(img, (int(m[0]), int(m[1])), 15, (0, 0, 255), -1)
         cv.circle(img, (int(x0), int(y0)), 10, (255, 0, 0), 3)
-        cv.putText(img, "%d" % c, (int(x0)-10, int(y0)+40), cv.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), 2)
+        cv.putText(
+            img, "%d" % c, (int(x0)-10, int(y0)+40),
+            cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
         cv.imshow("img", img)
         m[0], m[1] = m[0]-x0, m[1]-y0
         return m, old
+
 
 def order_points(pts):
     #thanks for creating this function:
@@ -112,6 +132,7 @@ def order_points(pts):
 	rect[3] = pts[np.argmax(diff)]
 
 	return rect
+
 
 def persp_form(image, pts):
     #thanks for creating this function:
@@ -139,12 +160,14 @@ def persp_form(image, pts):
 
 	return warped
 
+
 def k_prel(lit, key, ti):
     key.press(lit)
     time.sleep(ti)
     key.release(lit)
     #return lit
     pass
+
 
 def k_dou_prel(lit1, lit2, key, ti):
     key.press(lit1)
@@ -154,6 +177,7 @@ def k_dou_prel(lit1, lit2, key, ti):
     key.release(lit2)
     #return lit1, lit2
     pass
+
 
 def walk_key(key, dirX, dirY, t):
 
@@ -206,6 +230,7 @@ def walk_key(key, dirX, dirY, t):
     #print(x, y)#, val)
     pass
 
+
 def w_call(qq):
     ke = k_c()
     while 1:
@@ -213,11 +238,13 @@ def w_call(qq):
             walk_key(ke,*qq)
         pass
 
+
 def s_call(qq):
     while 1:
         key = qq.get()
         shoot(*key)
         pass
+
 
 def start(mou, an, bn):
     # разворачивание окна
@@ -229,6 +256,7 @@ def start(mou, an, bn):
     mou.position = (an, bn)
     mou.click(Button.left, 1)
 
+
 def end(mou, an, bn):
     time.sleep(2.5)
     # выход из игры
@@ -239,19 +267,23 @@ def end(mou, an, bn):
     mou.position = (an+130, bn-680)
     mou.click(Button.left, 1)
 
+
 def gtbp(name):
     out_name = []
     for i in name:
         out_name.append(cv.getTrackbarPos(i, "Tracking"))
     return out_name
 
+
 def stbp(name):
     for i,j in name.items():
         cv.setTrackbarPos(i,"Tracking",int(j))
 
+
 def ctb(name, val, max = 255):
     for i in range(len(name)):
         cv.createTrackbar(name[i], "Tracking", val[i], max, nothing)
+
 
 def nothing(x):
     pass
@@ -438,7 +470,7 @@ def main_f():
             #    qq_2[0], qq_2[1], qq_2[2] = clo[0], clo[1], t
 
         #cv.namedWindow("орлоры", cv.WINDOW_NORMAL)
-        #cv.imshow("frame", frame)
+        cv.imshow("frame", frame)
         #cv.imshow("hsv", hsv)
         #cv.imshow("res", res)
         #cv.imshow("res2", res2)
@@ -448,10 +480,10 @@ def main_f():
         #cv.imshow("res6", res6)
         cv.imshow("bet", bet)
 
-        #if cv.waitKey(3) & 0xFF == ord('4'):
-        #    cv.imwrite(f"screenshoot-t0.png", bet)
-        #    #cv.imwrite(f"screenshoot{nn+10}.jpg", bet)
-        #    #nn += 1
+        if cv.waitKey(3) & 0xFF == ord('4'):
+            cv.imwrite("screenshoot-t0.png", img1)
+            cv.imwrite("screenshoot-t0.jpg", img1)
+            #nn += 1
 
         if cv.waitKey(1) & 0xFF == ord('2'):
             #print(c/(time.time()-st))
