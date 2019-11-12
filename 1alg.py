@@ -326,15 +326,15 @@ def main_f():
         # imggg = cv.imread("Brawl Stars_Screenshot_2019.10.10_21.59.28.jpg")
         pass
 
-    qq = Array('d', [0,0,0])
-    qq_2 = Array('d', [0,0,0])
+    qq = Array('d', [0, 0, 0])
+    qq_2 = Array('d', [0, 0, 0])
     pr = Process(target=w_call, args=(qq,), daemon=True)
     pr_2 = Process(target=w_call, args=(qq_2,), daemon=True)
-    #pr_3 = Process(target=w_call, args=(qq_3,), daemon=True)
-    #pr2 = Process(target=s_call, args=(qq2,), daemon=True)
+    # pr_3 = Process(target=w_call, args=(qq_3,), daemon=True)
+    # pr2 = Process(target=s_call, args=(qq2,), daemon=True)
     val = 1
     c, c2 = 0, 1
-    t = 0.996 #0.9952
+    t = 0.996  # 0.9952
 
     left = 3
     wid = 1277 - left
@@ -343,34 +343,35 @@ def main_f():
 
     sct = mss()
     mou = m_c()
-    #key = k_c()
+    # key = k_c()
 
     an, bn = 1000, 700
     rang = 50
     step = 1/16
 
-    #start(mou, an, bn)
-    #time.sleep(8)
+    # start(mou, an, bn)
+    # time.sleep(8)
     pr.start()
     pr_2.start()
-    #pr_3.start()
-    #pr2.start()
+    # pr_3.start()
+    # pr2.start()
 
-    #for _ in range(400):
-    #st = time.time()
+    # for _ in range(400):
+    # st = time.time()
     while 1:
-        #if m != 4:
-        #    m += 1
-        #elif m == 5:
-        #    m -= 5
-        #    continue
+        # if m != 4:
+        #     m += 1
+        # elif m == 5:
+        #     m -= 5
+        #     continue
 
-        #ret, frame = cap_new.read()
+        # ret, frame = cap_new.read()
 
-        img1 = np.array(sct.grab({'top': top, 'left': left, 'width': wid, 'height': hei}))
+        img1 = np.array(sct.grab(
+            {'top': top, 'left': left, 'width': wid, 'height': hei}))
         frame = img1
         hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
-        #gray = cv.cvtColor(bet, cv.COLOR_BGR2GRAY)
+        # gray = cv.cvtColor(bet, cv.COLOR_BGR2GRAY)
 
         for _ in range(1):
             
@@ -396,16 +397,16 @@ def main_f():
             bet_mask4 = cv.bitwise_or(bet_mask3, mask5)
             bet = cv.bitwise_or(frame, frame, mask=bet_mask4)
 
-        #points_n = np.zeros(frame.shape[:2], dtype = "uint8")
-        #cv2.approxPolyDP()
-        #RETR_CCOMP или RETR_FLOODFILL
-        #bet_cont = cv.bitwise_or(bet, bet, mask=mask3)
+        # points_n = np.zeros(frame.shape[:2], dtype = "uint8")
+        # cv2.approxPolyDP()
+        # RETR_CCOMP или RETR_FLOODFILL
+        # bet_cont = cv.bitwise_or(bet, bet, mask=mask3)
 
-        contour, _ = cv.findContours( mask3.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE) # boxes and enemys red
-        #contour2, _ = cv.findContours( mask2.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE) # walls whihe
-        #contour3, _ = cv.findContours( mask.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE) # forest blue
-        contour4, _ = cv.findContours( mask4.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE) # "me" yellow
-        contour5, _ = cv.findContours( mask5.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE) # boosters azure
+        contour, _ = cv.findContours( mask3.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)  # boxes and enemys red
+        # contour2, _ = cv.findContours( mask2.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)  # walls whihe
+        # contour3, _ = cv.findContours( mask.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)  # forest blue
+        contour4, _ = cv.findContours( mask4.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)  # "me" yellow
+        contour5, _ = cv.findContours( mask5.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)  # boosters azure
 
         x0, y0 = wid/2, hei/2
         arr = []
@@ -421,11 +422,11 @@ def main_f():
                 x0, y0 = x, y
                 cv.circle(bet, (int(x), int(y)), 20, (0,255,0), -1)
 
-        #for i in contour2: ....
-        #        cv.circle(bet, (int(x), int(y)), 10, (0,255,0), -1)
-        #        #cv.circle(n_mask, (x-5, y+25), 60, (255,255,255), -1)
-        #        #cv.imshow("bet", points)
-        #        pass arrx, arry = [], []
+        # for i in contour2: ....
+        #         cv.circle(bet, (int(x), int(y)), 10, (0,255,0), -1)
+        #         #cv.circle(n_mask, (x-5, y+25), 60, (255,255,255), -1)
+        #         #cv.imshow("bet", points)
+        #         pass arrx, arry = [], []
 
         for i in contour5:
             moments = cv.moments(i, 1)
@@ -454,48 +455,48 @@ def main_f():
         clo, dis = closest(arr, wid, hei, x0, y0)
 
         if dis < 10:
-            pass#break
+            pass  # break
 
         c += 1
-        #c2 += 1
-        #c3 += 1
+        # c2 += 1
+        # c3 += 1
         if clo != False:
             if c % val == 0:
                 c -= val
-                #qq[0], qq[1], qq[2] = clo[0], clo[1], t
+                # qq[0], qq[1], qq[2] = clo[0], clo[1], t
 
-            #if c2 % val == 0:
-            #    c2 -= val+1
-            #    qq_2[0], qq_2[1], qq_2[2] = clo[0], clo[1], t
+            # if c2 % val == 0:
+            #     c2 -= val+1
+            #     qq_2[0], qq_2[1], qq_2[2] = clo[0], clo[1], t
 
-        #cv.namedWindow("орлоры", cv.WINDOW_NORMAL)
+        # cv.namedWindow("орлоры", cv.WINDOW_NORMAL)
         cv.imshow("frame", frame)
-        #cv.imshow("hsv", hsv)
-        #cv.imshow("res", res)
-        #cv.imshow("res2", res2)
-        #cv.imshow("res3", res3)
-        #cv.imshow("res4", res4)
-        #cv.imshow("res5", res5)
-        #cv.imshow("res6", res6)
+        # cv.imshow("hsv", hsv)
+        # cv.imshow("res", res)
+        # cv.imshow("res2", res2)
+        # cv.imshow("res3", res3)
+        # cv.imshow("res4", res4)
+        # cv.imshow("res5", res5)
+        # cv.imshow("res6", res6)
         cv.imshow("bet", bet)
 
         if cv.waitKey(3) & 0xFF == ord('4'):
             cv.imwrite("screenshoot-t0.png", img1)
             cv.imwrite("screenshoot-t0.jpg", img1)
-            #nn += 1
+            # nn += 1
 
         if cv.waitKey(1) & 0xFF == ord('2'):
             #print(c/(time.time()-st))
             #print((time.time()-st)/c)
             break
-    
+
     sct.shot(output='die_screenshoot.png')
     pr.terminate()
     pr_2.terminate()
-    #pr_3.terminate()
+    # pr_3.terminate()
     cv.destroyAllWindows()
     print("end")
-    #end(mou, an, bn)
+    # end(mou, an, bn)
     cap.release()
 
 if __name__ == '__main__':
