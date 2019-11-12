@@ -322,7 +322,8 @@ def main_f():
         l_b4, u_b4 = np.array([n[0], n[1], n[2]]), np.array([n[3], n[4], n[5]])
         n = gtbp(name5)
         l_b5, u_b5 = np.array([n[0], n[1], n[2]]), np.array([n[3], n[4], n[5]])
-
+        # n = gtbp(name6)
+        # l_b6,u_b6 = np.array([n[0], n[1], n[2]]),np.array([n[3], n[4], n[5]])
         # imggg = cv.imread("Brawl Stars_Screenshot_2019.10.10_21.59.28.jpg")
         pass
 
@@ -374,22 +375,19 @@ def main_f():
         # gray = cv.cvtColor(bet, cv.COLOR_BGR2GRAY)
 
         for _ in range(1):
-            
-            #n = gtbp(name6)
-            #l_b6, u_b6 = np.array([n[0], n[1], n[2]]), np.array([n[3], n[4], n[5]])
 
-            mask = cv.inRange(hsv, l_b, u_b) # charapters
-            #res = cv.bitwise_and(frame, frame, mask=mask)
-            mask2 = cv.inRange(hsv, l_b2, u_b2) # walls
-            #res2 = cv.bitwise_and(frame, frame, mask=mask2)
-            mask3 = cv.inRange(hsv, l_b3, u_b3) # boxes
-            #res3 = cv.bitwise_and(frame, frame, mask=mask3)
-            mask4 = cv.inRange(hsv, l_b4, u_b4) # friends
-            #res4 = cv.bitwise_and(frame, frame, mask=mask4)
+            mask = cv.inRange(hsv, l_b, u_b)  # charapters
+            # res = cv.bitwise_and(frame, frame, mask=mask)
+            mask2 = cv.inRange(hsv, l_b2, u_b2)  # walls
+            # res2 = cv.bitwise_and(frame, frame, mask=mask2)
+            mask3 = cv.inRange(hsv, l_b3, u_b3)  # boxes
+            # res3 = cv.bitwise_and(frame, frame, mask=mask3)
+            mask4 = cv.inRange(hsv, l_b4, u_b4)  # friends
+            # res4 = cv.bitwise_and(frame, frame, mask=mask4)
             mask5 = cv.inRange(hsv, l_b5, u_b5)
-            #res5 = cv.bitwise_and(frame, frame, mask=mask5)
-            #mask6 = cv.inRange(hsv, l_b6, u_b6)
-            #res6 = cv.bitwise_and(frame, frame, mask=mask6)
+            # res5 = cv.bitwise_and(frame, frame, mask=mask5)
+            # mask6 = cv.inRange(hsv, l_b6, u_b6)
+            # res6 = cv.bitwise_and(frame, frame, mask=mask6)
 
             bet_mask = cv.bitwise_or(mask2, mask)
             bet_mask2 = cv.bitwise_or(bet_mask, mask3)
@@ -402,11 +400,16 @@ def main_f():
         # RETR_CCOMP или RETR_FLOODFILL
         # bet_cont = cv.bitwise_or(bet, bet, mask=mask3)
 
-        contour, _ = cv.findContours( mask3.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)  # boxes and enemys red
-        # contour2, _ = cv.findContours( mask2.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)  # walls whihe
-        # contour3, _ = cv.findContours( mask.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)  # forest blue
-        contour4, _ = cv.findContours( mask4.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)  # "me" yellow
-        contour5, _ = cv.findContours( mask5.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)  # boosters azure
+        contour, _ = cv.findContours(  # boxes & enemys red
+            mask3.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)
+        # contour2, _ = cv.findContours( mask2.copy(),
+        # cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)  # walls whihe
+        # contour3, _ = cv.findContours( mask.copy(),
+        # cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)  # forest blue
+        contour4, _ = cv.findContours(  # "me" yellow
+            mask4.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)
+        contour5, _ = cv.findContours(  # boosters azure
+            mask5.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)
 
         x0, y0 = wid/2, hei/2
         arr = []
@@ -420,7 +423,7 @@ def main_f():
                 x = dM10 / dArea
                 y = dM01 / dArea
                 x0, y0 = x, y
-                cv.circle(bet, (int(x), int(y)), 20, (0,255,0), -1)
+                cv.circle(bet, (int(x), int(y)), 20, (0, 255, 0), -1)
 
         # for i in contour2: ....
         #         cv.circle(bet, (int(x), int(y)), 10, (0,255,0), -1)
@@ -437,8 +440,8 @@ def main_f():
             if dArea > 200:
                 x = dM10 / dArea
                 y = dM01 / dArea
-                cv.circle(bet, (int(x), int(y)), 5, (0,0,0), -1)
-                arr.append([x,y])
+                cv.circle(bet, (int(x), int(y)), 5, (0, 0, 0), -1)
+                arr.append([x, y])
 
         for i in contour:
             moments = cv.moments(i, 1)
@@ -449,8 +452,8 @@ def main_f():
             if dArea > 200:
                 x = dM10 / dArea
                 y = dM01 / dArea
-                cv.circle(bet, (int(x), int(y)), 10, (255,0,0), -1)
-                arr.append([x,y])
+                cv.circle(bet, (int(x), int(y)), 10, (255, 0, 0), -1)
+                arr.append([x, y])
 
         clo, dis = closest(arr, wid, hei, x0, y0)
 
@@ -460,7 +463,7 @@ def main_f():
         c += 1
         # c2 += 1
         # c3 += 1
-        if clo != False:
+        if clo is not False:
             if c % val == 0:
                 c -= val
                 # qq[0], qq[1], qq[2] = clo[0], clo[1], t
@@ -484,10 +487,11 @@ def main_f():
             cv.imwrite("screenshoot-t0.png", img1)
             cv.imwrite("screenshoot-t0.jpg", img1)
             # nn += 1
+            pass
 
         if cv.waitKey(1) & 0xFF == ord('2'):
-            #print(c/(time.time()-st))
-            #print((time.time()-st)/c)
+            # print(c/(time.time()-st))
+            # print((time.time()-st)/c)
             break
 
     sct.shot(output='die_screenshoot.png')
