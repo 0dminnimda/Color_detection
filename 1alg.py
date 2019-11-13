@@ -279,19 +279,21 @@ def main_f():
         name3 = [i+"3" for i in name1]
         name4 = [i+"4" for i in name1]
         name5 = [i+"5" for i in name1]
-        # name6 = [i+"6" for i in name1]
-        # ctb(name6, [255, 255, 255, 255, 255, 255])
+        name6 = [i+"6" for i in name1]
+        #name7 = [i+"6" for i in name1]
+        #ctb(name7, [255, 255, 255, 255, 255, 255])
+        ctb(name6, [30, 255, 255, 30, 255, 255])
         ctb(name5, [90, 100, 155, 95, 255, 255])
         ctb(name4, [28, 67, 64, 44, 255, 255])
         ctb(name3, [0, 255, 111, 0, 255, 255])
         ctb(name2, [0, 0, 0, 0, 0, 255])
         ctb(name1, [110, 100, 120, 130, 255, 255])
 
-        cap = cv.VideoCapture('2019-10-06 02-16-00.mp4')
-        cap2 = cv.VideoCapture('2019-10-06 02-17-30.mp4')
-        cap_new = cv.VideoCapture('2019-10-07 12-58-00.mp4')
+        #cap = cv.VideoCapture('2019-10-06 02-16-00.mp4')
+        #cap2 = cv.VideoCapture('2019-10-06 02-17-30.mp4')
+        #cap_new = cv.VideoCapture('2019-10-07 12-58-00.mp4')
         # 2019-10-07 12-45-36.mp4')#2019-10-07 12-06-37.mp4')
-        cap_new.set(cv.CAP_PROP_FPS, 5)
+        #cap_new.set(cv.CAP_PROP_FPS, 5)
         # hei = cap_new.get(cv.CAP_PROP_FRAME_HEIGHT)
         # wid = cap_new.get(cv.CAP_PROP_FRAME_WIDTH)
         # cap_new.set(cv.CAP_PROP_FRAME_WIDTH , 1024)
@@ -307,8 +309,8 @@ def main_f():
         l_b4, u_b4 = np.array([n[0], n[1], n[2]]), np.array([n[3], n[4], n[5]])
         n = gtbp(name5)
         l_b5, u_b5 = np.array([n[0], n[1], n[2]]), np.array([n[3], n[4], n[5]])
-        # n = gtbp(name6)
-        # l_b6,u_b6 = np.array([n[0], n[1], n[2]]),np.array([n[3], n[4], n[5]])
+        # n = gtbp(name7)
+        # l_b7,u_b7 = np.array([n[0], n[1], n[2]]),np.array([n[3], n[4], n[5]])
         # imggg = cv.imread("Brawl Stars_Screenshot_2019.10.10_21.59.28.jpg")
         pass
 
@@ -361,18 +363,23 @@ def main_f():
 
         for _ in range(1):
 
+            n = gtbp(name6)
+            l_b6,u_b6 = np.array([n[0], n[1], n[2]]),np.array([n[3], n[4], n[5]])
+
             mask = cv.inRange(hsv, l_b, u_b)  # charapters
             # res = cv.bitwise_and(frame, frame, mask=mask)
             mask2 = cv.inRange(hsv, l_b2, u_b2)  # walls
-            # res2 = cv.bitwise_and(frame, frame, mask=mask2)
+            res2 = cv.bitwise_and(frame, frame, mask=mask2)
             mask3 = cv.inRange(hsv, l_b3, u_b3)  # boxes
             # res3 = cv.bitwise_and(frame, frame, mask=mask3)
             mask4 = cv.inRange(hsv, l_b4, u_b4)  # friends
             # res4 = cv.bitwise_and(frame, frame, mask=mask4)
-            mask5 = cv.inRange(hsv, l_b5, u_b5)
+            mask5 = cv.inRange(hsv, l_b5, u_b5)  # boosters azure
             # res5 = cv.bitwise_and(frame, frame, mask=mask5)
-            # mask6 = cv.inRange(hsv, l_b6, u_b6)
-            # res6 = cv.bitwise_and(frame, frame, mask=mask6)
+            mask6 = cv.inRange(hsv, l_b6, u_b6)  # walls yellow
+            #res6 = cv.bitwise_and(frame, frame, mask=mask6)
+            # mask7 = cv.inRange(hsv, l_b7, u_b7)
+            # res7 = cv.bitwise_and(frame, frame, mask=mask7)
 
             bet_mask = cv.bitwise_or(mask2, mask)
             bet_mask2 = cv.bitwise_or(bet_mask, mask3)
@@ -385,16 +392,12 @@ def main_f():
         # RETR_CCOMP или RETR_FLOODFILL
         # bet_cont = cv.bitwise_or(bet, bet, mask=mask3)
 
-        contour, _ = cv.findContours(  # boxes & enemys red
-            mask3.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)
-        # contour2, _ = cv.findContours( mask2.copy(),
-        # cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)  # walls whihe
-        # contour3, _ = cv.findContours( mask.copy(),
-        # cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)  # forest blue
-        contour4, _ = cv.findContours(  # "me" yellow
-            mask4.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)
-        contour5, _ = cv.findContours(  # boosters azure
-            mask5.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)
+        contour, _ = cv.findContours(mask3.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)  # boxes & enemys red
+        contour2, _ = cv.findContours( mask2.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)  # walls whihe
+        # contour3, _ = cv.findContours( mask.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)  # forest blue
+        contour4, _ = cv.findContours(mask4.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)  # "me" yellow
+        contour5, _ = cv.findContours(mask5.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)  # boosters azure
+        contour6, _ = cv.findContours(mask6.copy(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE)  # walls yellow
 
         x0, y0 = wid/2, hei/2
         arr = []
@@ -410,11 +413,31 @@ def main_f():
                 x0, y0 = x, y
                 cv.circle(bet, (int(x), int(y)), 20, (0, 255, 0), -1)
 
-        # for i in contour2: ....
-        #         cv.circle(bet, (int(x), int(y)), 10, (0,255,0), -1)
-        #         #cv.circle(n_mask, (x-5, y+25), 60, (255,255,255), -1)
-        #         #cv.imshow("bet", points)
-        #         pass arrx, arry = [], []
+        for i in contour6:
+            moments = cv.moments(i, 1)
+            dM01 = moments['m01']
+            dM10 = moments['m10']
+            dArea = moments['m00']
+
+            if 0 < dArea < 50:
+                x = dM10 / dArea
+                y = dM01 / dArea
+                cv.circle(bet, (int(x), int(y)), 6, (0, 0, 0), 2)
+
+        for i in contour2:
+            moments = cv.moments(i, 1)
+            dM01 = moments['m01']
+            dM10 = moments['m10']
+            dArea = moments['m00']
+
+            if dArea > 75:
+                x = dM10 / dArea
+                y = dM01 / dArea
+                cv.circle(bet, (int(x), int(y)), 10, (0, 255, 0), 2)
+                #cv.circle(n_mask, (x-5, y+25), 60, (255,255,255), -1)
+                #cv.imshow("bet", points)
+                #arrx, arry = [], []
+                pass
 
         for i in contour5:
             moments = cv.moments(i, 1)
@@ -458,21 +481,22 @@ def main_f():
             #     qq_2[0], qq_2[1], qq_2[2] = clo[0], clo[1], t
 
         # cv.namedWindow("орлоры", cv.WINDOW_NORMAL)
-        cv.imshow("frame", frame)
+        #cv.imshow("frame", frame)
         # cv.imshow("hsv", hsv)
         # cv.imshow("res", res)
-        # cv.imshow("res2", res2)
+        cv.imshow("res2", res2)
         # cv.imshow("res3", res3)
         # cv.imshow("res4", res4)
         # cv.imshow("res5", res5)
         # cv.imshow("res6", res6)
+        # cv.imshow("res7", res7)
         cv.imshow("bet", bet)
 
-        if cv.waitKey(3) & 0xFF == ord('4'):
-            cv.imwrite("screenshoot-t0.png", img1)
-            cv.imwrite("screenshoot-t0.jpg", img1)
-            # nn += 1
-            pass
+        #if cv.waitKey(3) & 0xFF == ord('4'):
+        #    cv.imwrite("screenshoot-t0.png", img1)
+        #    cv.imwrite("screenshoot-t0.jpg", img1)
+        #    # nn += 1
+        #    pass
 
         if cv.waitKey(1) & 0xFF == ord('2'):
             # print(c/(time.time()-st))
@@ -486,7 +510,7 @@ def main_f():
     cv.destroyAllWindows()
     print("end")
     # end(mou, an, bn)
-    cap.release()
+    #cap.release()
 
 if __name__ == '__main__':
     main_f()
