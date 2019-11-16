@@ -47,7 +47,7 @@ def nothing(x):
     pass
 
 cv.namedWindow("Tracking", cv.WINDOW_NORMAL)
-cv.createTrackbar("use", "Tracking", 128, 300, nothing)
+cv.createTrackbar("use", "Tracking", 0, 300, nothing)
 
 while 1:
     m = 135#cv.getTrackbarPos("use", "Tracking")#150
