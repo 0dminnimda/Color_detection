@@ -3,9 +3,6 @@ import cv2 as cv
 import time
 
 def order_points(pts):
-    # thanks for creating this original of this function:
-    # https://www.pyimagesearch.com/2014/08/25/4-
-    # point-opencv-getperspective-transform-example/
     pts = np.array(pts)
     rect = np.zeros((4, 2), dtype="float32")
 
@@ -20,9 +17,6 @@ def order_points(pts):
     return rect
 
 def persp_form(image, pts, m):
-    # thanks for creating this original of this function:
-    # https://www.pyimagesearch.com/2014/08/25/4-
-    # point-opencv-getperspective-transform-example/
     rect = order_points(pts)
     (tl, tr, br, bl) = rect
 
