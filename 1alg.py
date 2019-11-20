@@ -1,5 +1,5 @@
 import numpy as np
-import scipy as sp
+#import scipy as sp
 import cv2 as cv
 from mss import mss
 import time
@@ -317,10 +317,17 @@ def main_f():
     c, c2 = 0, 1
     t = 0.996  # 0.9952
 
-    left = 3
-    wid = 1277 - left
-    top = 42
-    hei = 759 - top
+    #cv.namedWindow("Tracking2", cv.WINDOW_NORMAL)
+    #cv.createTrackbar("left", "Tracking2", 3, 25, nothing) #left = 3
+    #cv.createTrackbar("wid", "Tracking2", 871, 1300, nothing) #wid = 1277 - left
+    #cv.createTrackbar("top", "Tracking2", 52, 60, nothing) #top = 42
+    #cv.createTrackbar("hei", "Tracking2", 490, 800, nothing) #hei = 759 - top
+
+    left = 3  # cv.getTrackbarPos("left", "Tracking2")
+    wid = 871  # cv.getTrackbarPos("wid", "Tracking2")
+    top = 52  # cv.getTrackbarPos("top", "Tracking2")
+    hei = 490  # cv.getTrackbarPos("hei", "Tracking2")
+    
 
     sct = mss()
     mou = m_c()
@@ -331,7 +338,7 @@ def main_f():
     step = 1/16
 
     # start(mou, an, bn)
-    # time.sleep(8)
+    # time.sleep(2)
     pr.start()
     pr_2.start()
     # pr_3.start()
@@ -340,6 +347,8 @@ def main_f():
     # for _ in range(400):
     # st = time.time()
     while 1:
+
+
         # if m != 4:
         #     m += 1
         # elif m == 5:
@@ -474,7 +483,7 @@ def main_f():
             #     qq_2[0], qq_2[1], qq_2[2] = clo[0], clo[1], t
 
         # cv.namedWindow("орлоры", cv.WINDOW_NORMAL)
-        #cv.imshow("frame", frame)
+        # cv.imshow("frame", frame)
         # cv.imshow("hsv", hsv)
         # cv.imshow("res", res)
         # cv.imshow("res2", res2)
@@ -497,6 +506,7 @@ def main_f():
             # print((time.time()-st)/c)
             break
 
+    # cv.imwrite("some.png", frame)
     sct.shot(output='die_screenshoot.png')
     pr.terminate()
     pr_2.terminate()
