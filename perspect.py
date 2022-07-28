@@ -1,6 +1,7 @@
 import numpy as np
 import cv2 as cv
 import time
+from multiprocessing import Process, Value, Array
 
 def order_points(pts):
     pts = np.array(pts)
@@ -40,10 +41,22 @@ def persp_form(image, pts, m):
 def nothing(x):
     pass
 
-cv.namedWindow("Tracking", cv.WINDOW_NORMAL)
-cv.createTrackbar("use", "Tracking", 0, 300, nothing)
+def m(qq):
+    qq[0] = 5
+    
 
-while 1:
+st=time.time()
+qq = Array('d', [0, 0, 0])
+pr = Process(target=m, args=(qq,), daemon=True)
+pr.start()
+print(qq)
+pr.terminate()
+print(time.time()-st)
+
+#cv.namedWindow("Tracking", cv.WINDOW_NORMAL)
+#cv.createTrackbar("use", "Tracking", 0, 300, nothing)
+
+while 0:
     m = 135#cv.getTrackbarPos("use", "Tracking")#150
     #a = [(288, 205), (287, 520), (433, 440), (433, 141)]
     img = cv.imread("screenshoot-t0.png")
